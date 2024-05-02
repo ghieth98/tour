@@ -24,7 +24,7 @@ $destination_id = isset($_GET['destination_id']) && is_numeric($_GET['destinatio
 
 // Fetch destination details from the database
 $query = $con->prepare("
-    SELECT  d.destination_id,d.`range`, d.name, d.description, d.working_hours, d.phone_number, r.stars, f.tourist_id
+    SELECT  d.destination_id,d.start_date, d.end_date, d.name, d.description, d.phone_number, r.stars, f.tourist_id
     FROM destination AS d 
     LEFT JOIN tours.favorite f on d.destination_id = f.destination_id
     LEFT JOIN tours.rate r on d.destination_id = r.destination_id
@@ -202,8 +202,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             </p>
             <div class="d-md-flex mt-5 mb-5">
                 <ul>
-                    <li> مواعيد العمل: <?php
-                        echo $destination['working_hours'] ?></li>
+                    <li class="mb-1"> مواعيد العمل: من: <?php
+                            echo date("H:i A", strtotime($destination['start_date']));
+                            ?> إلى:
+                            <?php  echo date("H:i A", strtotime($destination['end_date'])); ?> </li>
                     <li> رقم الهاتف: <?php
                         echo $destination['phone_number'] ?></li>
 

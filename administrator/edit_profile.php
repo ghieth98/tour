@@ -27,8 +27,7 @@ $admin = $query->fetch();
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Validate the name and the password and confirm password
     $name = validate($_POST['name']);
-    $password = validate($_POST['password']);
-    $confirmPassword = validate($_POST['confirm_password']);
+
 
     // Check if password is empty
     if (empty($name)) {
@@ -112,6 +111,7 @@ $successMsg = $_GET['success_message'] ?? '';
             <ul class="js-clone-nav d-none d-lg-inline-block text-right site-menu float-left">
                 <li class=""><a href="dashboard.php">الصفحة الرئيسية</a></li>
                 <li class=""><a href="edit_password.php">تعديل كلمة المرور</a></li>
+                <li class=""><a href="add_api_url.php">اضافة رابط الربط</a></li>
                 <li><a href="../logout.php">تسجيل الخروج</a></li>
             </ul>
 
@@ -151,7 +151,8 @@ $successMsg = $_GET['success_message'] ?? '';
     </div>
 <?php endif;  ?>
 
-<div class="justify-content-center d-flex text-center center-div bg-white p-5 rounded shadow">
+<div class="justify-content-center d-flex text-center center-div bg-white p-5  rounded shadow" style="margin-top:
+120px">
     <form method="post"
           action="<?php
           echo htmlspecialchars($_SERVER['PHP_SELF']) ?>">

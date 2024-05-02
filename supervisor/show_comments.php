@@ -10,6 +10,9 @@ include "../connection.php";
 // Retrieve supervisor ID from session
 $supervisor_id = $_SESSION['supervisor_id'];
 
+$destination_id = isset($_GET['destination_id']) && is_numeric($_GET['destination_id']) ?
+    intval($_GET['destination_id']) : 0;
+
 // Fetch all reviews from the database, along with associated destination and tourist names
 $query = $con->prepare("
     SELECT 
@@ -26,10 +29,11 @@ $query = $con->prepare("
         tours.tourist t 
     ON 
         t.tourist_id = review.tourist_id
+    WHERE review.destination_id = ?
     
     
 ");
-$query->execute();
+$query->execute([$destination_id]);
 $comments = $query->fetchAll();
 
 // Check if there's a success message passed via GET parameter, if not, set it to an empty string
@@ -96,9 +100,9 @@ $successMsg = $_GET['success_message'] ?? '';
             <ul class="js-clone-nav d-none d-lg-inline-block text-right site-menu float-left">
                 <li class=""><a href="dashboard.php">الصفحة الرئيسية</a></li>
                 <li class=""><a href="edit_profile.php">تعديل بيانات الملف الشخصي</a></li>
-                <li class=""><a href="show_comments.php">عرض ريفيو</a></li>
+                <li class=""><a href="show_destinations.php">عرض الوجهات</a></li>
                 <li class=""><a href="show_reports.php">عرض البلاغات</a></li>
-                <li class=""><a href="show_tourists.php">أدارة السياح</a></li>
+<!--                <li class=""><a href="show_tourists.php">إدارة السياح</a></li>-->
                 <li><a href="../logout.php">تسجيل الخروج</a></li>
             </ul>
 

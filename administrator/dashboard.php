@@ -74,6 +74,7 @@ $successMsg = $_GET['success_message'] ?? '';
             <ul class="js-clone-nav d-none d-lg-inline-block text-right site-menu float-left">
                 <li class=""><a href="dashboard.php">الصفحة الرئيسية</a></li>
                 <li class=""><a href="edit_profile.php">تعديل بيانات الملف الشخصي</a></li>
+                <li class=""><a href="add_api_url.php">أضافة رابط الربط</a></li>
                 <li><a href="../logout.php">تسجيل الخروج</a></li>
             </ul>
 
@@ -104,7 +105,7 @@ $successMsg = $_GET['success_message'] ?? '';
 <!--End Hero Section-->
 
 <!--Start Our ٍSupervisor Section-->
-<div class="px-5 py-5 ">
+<div class="px-5 py-5 " style="height: 100vh">
 
     <?php if ($successMsg):  ?>
         <div id="successMessage" class="d-flex justify-content-center py-3">
@@ -165,16 +166,12 @@ $successMsg = $_GET['success_message'] ?? '';
 
                             <?php
                             if ($supervisor['ban'] === 'unbanned') : ?>
-                                <select name="ban" id="ban" class="form-select form-select-sm mb-3">
-                                    <option name="banned" value="banned">
-                                        حظر
-                                    </option>
-                                    <option name="temporary" value="temporary">
-                                        حظر مؤقت
-                                    </option>
-                                </select>
-                                <button type="submit" class="px-4 btn py-1 btn-primary ">
+                                <button type="submit" name="ban" value="banned" class="px-4 btn py-1 btn-primary ">
                                     حظر
+                                </button>
+                                <button type="submit" name="ban" value="temporary" class="px-4 btn py-1
+                                btn-primary ">
+                                    حظر مؤقت
                                 </button>
                             <?php
                             elseif ($supervisor['ban'] === 'banned' || $supervisor['ban'] === 'temporary'): ?>
@@ -199,7 +196,7 @@ $successMsg = $_GET['success_message'] ?? '';
 
 
 <!--Start Footer Section-->
-<div class="site-footer fixed-bottom">
+<div class="site-footer ">
     <div class="inner first">
         <div class="inner dark">
             <div class="container">

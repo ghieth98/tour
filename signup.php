@@ -222,7 +222,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <!--End SignUp Section-->
 
 <!--Start Footer Section-->
-<div class="site-footer fixed-bottom">
+<div class="site-footer ">
     <div class="inner first">
         <div class="inner dark">
             <div class="container">

@@ -168,8 +168,10 @@ $favorites = $query->fetchAll();
                         </a>
                         <p class="card-text"><?php
                             echo substr($favorite['description'], 0, 300) ?>...</p>
-                        <p class="text-muted"> أوقات العمل : <?php
-                            echo $favorite['working_hours'] ?> </p>
+                        <p class="text-muted"> أوقات العمل :  من: <?php
+                            echo date("H:i A", strtotime($favorite['start_date']));
+                            ?> إلى:
+                            <?php  echo date("H:i A", strtotime($favorite['end_date'])); ?> </p>
                         <p class="text-muted"> اسم المدينة : <?php
                             echo $favorite['city_name'] ?> </p>
                         <p class="text-muted">رقم الهاتف: <?php
@@ -217,7 +219,7 @@ $favorites = $query->fetchAll();
 
 
 <!--Start Footer Section-->
-<div class="site-footer fixed-bottom">
+<div class="site-footer ">
     <div class="inner first ">
         <div class="inner dark">
             <div class="container">

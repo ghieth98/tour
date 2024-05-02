@@ -20,28 +20,32 @@ if ($results_count > 0) {
             <td>' . $supervisor['email'] . '</td>
             <td>
                 <div style="display: inline;">
-                    <form action="ban_supervisor.php?supervisor_id=' . $supervisor['supervisor_id'] . '" method="post" onsubmit="' .
-            (($supervisor['ban'] === 'unbanned') ? 'return confirm(\'هل تريد حظر هذا المشرف؟\');' : 'return confirm(\'هل تريد رفع الحظر عن هذا المشرف؟\');') . '"
-                    style="display: inline;">
-                        ' . (($supervisor['ban'] === 'unbanned') ? '
-                        <select name="ban" id="ban" class="form-select form-select-sm mb-3">
-                            <option name="banned" value="banned">حظر</option>
-                            <option name="temporary" value="temporary">حظر مؤقت</option>
-                        </select>
-                        <button type="submit" class="px-4 btn py-1 btn-primary">حظر</button>' : '
-                        <button name="ban" value="unbanned" class="px-4 btn py-1 btn-primary" type="submit">رفع الحظر</button>') . '
-                    </form>
+                    <form action="ban_supervisor.php?supervisor_id=' . $supervisor['supervisor_id'] . '" method="post" onsubmit="';
+        if ($supervisor['ban'] === 'unbanned') {
+            $data .= 'return confirm(\'هل تريد حظر هذا المشرف ؟\');';
+        } elseif ($supervisor['ban'] === 'banned' || $supervisor['ban'] === 'temporary') {
+            $data .= 'return confirm(\'هل تريد رفع الحظر عن هذا المشرف؟\');';
+        }
+        $data .= '" style="display: inline;">';
+        if ($supervisor['ban'] === 'unbanned') {
+            $data .= '<button type="submit" name="ban" value="banned" class="px-4 btn py-1 btn-primary ">حظر</button>
+                      <button type="submit" name="ban" value="temporary" class="px-4 btn py-1 btn-primary ">حظر مؤقت</button>';
+        } elseif ($supervisor['ban'] === 'banned' || $supervisor['ban'] === 'temporary') {
+            $data .= '<button name="ban" value="unbanned" class="px-4 btn py-1 btn-primary " type="submit">رفع الحظر</button>';
+        }
+        $data .= '</form>
                 </div>
             </td>
         </tr>';
-
     }
 } else {
     $data .= '<tr>
-            <td> </td>
-            <td> لا يوجد مشرف بهذا الاسم</td>
-            <td>  </td>
-            <td>  </td>
-        </tr>';
+                <td></td>
+                <td>لا يوجد مشرف بهذا الاسم</td>
+                <td></td>
+                <td></td>
+            </tr>';
 }
+
 echo $data;
+

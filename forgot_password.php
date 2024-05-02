@@ -33,6 +33,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
                 $mail->isSMTP();
                 $mail->Host = 'smtp.gmail.com';
+                $mail->CharSet = 'UTF-8';
+                $mail->Encoding = "base64";
                 $mail->Port = 587;
                 $mail->SMTPAuth = true;
                 $mail->SMTPSecure = 'tls';
@@ -57,7 +59,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     $stmt = $con->prepare("UPDATE tourist SET password=? WHERE email=?");
                     $stmt->execute([$password, $email]);
                     $successMsg = 'الرجاء التأكد من البريد الإلكتروني لمعرفة الرقم السري الجديد';
-                    header("Location:login.php?success_message=".urlencode($successMsg));
+                    header("Location:login.php?message=".urlencode($successMsg));
                     exit; // Exit to prevent further execution after redirection
                 }
             }

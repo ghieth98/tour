@@ -107,7 +107,7 @@ $successMsg = $_GET['success_message'] ?? '';
         <div class="row align-items-center">
             <div class="col-lg-6 mx-auto text-center">
                 <div class="intro-wrap">
-                    <h1 class="mb-0">الوجهات</h1>
+                    <h1 class="mb-0">المدن</h1>
                 </div>
             </div>
         </div>
@@ -127,11 +127,16 @@ $successMsg = $_GET['success_message'] ?? '';
             <!--Start Card-->
             <div class="col-lg-3 rounded col-md-6 mb-3  text-center">
                 <div class="card h-100 shadow">
+                    <a href="city_destination.php?city_id=<?php echo $city['city_id'] ?>">
+                        <img alt="صورة الوجهة" class="card-img-top" style="height: 300px"
+                             src="uploads/<?php echo $city['city_image'] ?>">
+                    </a>
                     <div class="card-body">
                         <a href="city_destination.php?city_id=<?php echo $city['city_id'] ?>">
                             <h5 class="card-title"><?php echo $city['name'] ?></h5>
                         </a>
-                        <p class="card-text">الطقس: <?php echo $city['weather'] ?> </p>
+                        <p class="card-text"><?php echo substr($city['city_description'], 0, 300)  ?>...</p>
+                        <p class="card-text">الفصل: <?php echo $city['weather'] ?> </p>
                         <p class="text-muted">عدد وجهات المدينة: <?php echo $city['destination_count'] ?></p>
 
 
@@ -146,7 +151,7 @@ $successMsg = $_GET['success_message'] ?? '';
 
 
 <!--Start Footer Section-->
-<div class="site-footer fixed-bottom">
+<div class="site-footer ">
     <div class="inner first">
         <div class="inner dark">
             <div class="container">

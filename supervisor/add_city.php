@@ -3,49 +3,58 @@
 // Start session to maintain user's session data
 session_start();
 
-if (!(isset($_SESSION['email']))) {
-    header('Location../login.php');
+if (!isset($_SESSION['email'])) {
+    header('Location: ../login.php'); // Corrected missing colon
+    exit; // Added exit to stop further execution
 }
+
 // Include necessary files for validation and database connection
 include "../validate.php";
 include "../connection.php";
 
 // Initialize variables for form fields and error messages
-$name = $day = $weather = '';
-$nameError = $dayError = $weatherError = '';
+$name = $description = $weather = '';
+$nameError = $descriptionError = $weatherError = $imageError = '';
 $successMsg = '';
 
 // Check if form is submitted via POST method
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Sanitize and validate form inputs
     $name = validate($_POST['name']);
-    $day = validate($_POST['day']);
+    $description = validate($_POST['description']);
     $weather = validate($_POST['weather']);
+
+    $image = $_FILES['image'];
+    $extension = pathinfo($image['name'], PATHINFO_EXTENSION);
+    $extension = strtolower($extension);
 
     // Check if name already exists in database
     $name_query = $con->prepare("SELECT name FROM city WHERE name=?");
     $name_query->execute([$name]);
-    $cities_names = $name_query->fetchAll();
-    $name_count = $name_query->rowCount();
+    $name_count = $name_query->rowCount(); // Counting rows directly
 
     // If Conditions
     if (empty($name)) {
         $nameError = 'الرجاء أدخال اسم المدينة';
     } elseif ($name_count > 0) {
-        foreach ($cities_names as $city_name) {
-            if ($city_name['name'] == $name) {
-                $nameError = 'اسم المدينة هذا موجود مسبقا';
-            }
-        }
-    } elseif (empty($day)) {
-        $dayError = 'الرجاء أدخال تاريخ اليوم';
+        $nameError = 'اسم المدينة هذا موجود مسبقا';
     } elseif (empty($weather)) {
         $weatherError = 'الرجاء أدخال الطقس';
+    } elseif (empty($description)) {
+        $descriptionError = 'الرجاء أدخال وصف المدينة';
+    } elseif (empty($image['tmp_name'])) { // Check for uploaded file
+        $imageError = 'الرجاء أدخال صورة المدينة';
+    } elseif (!in_array($extension, ['jpeg', 'png', 'svg', 'jpg'])) {
+        $imageError = 'صيغة الملف غير مدعومة';
     } else {
-        // If all validations pass, insert new supervisor into the database
-        $stmt = $con->prepare("INSERT INTO city(name, day, weather) VALUES (?, ?, ?)");
-        $stmt->execute([$name, $day, $weather]);
-        $successMsg = 'تم إضافة مدينة جديد بنجاح';
+        $imageName = $image['name'];
+        $uploadPath = '../uploads/'.$imageName;
+        move_uploaded_file($image['tmp_name'], $uploadPath); // Use $image['tmp_name']
+
+        // If all validations pass, insert new city into the database
+        $stmt = $con->prepare("INSERT INTO city(name, weather, city_description, city_image) VALUES (?, ?, ?, ?)");
+        $stmt->execute([$name, $weather, $description, $imageName]);
+        $successMsg = 'تم إضافة مدينة جديدة بنجاح';
         header("Location: dashboard.php?success_message=".urlencode($successMsg));
         exit;
     }
@@ -110,9 +119,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <ul class="js-clone-nav d-none d-lg-inline-block text-right site-menu float-left">
                 <li class=""><a href="dashboard.php">الصفحة الرئيسية</a></li>
                 <li class=""><a href="edit_profile.php">تعديل بيانات الملف الشخصي</a></li>
-                <li class=""><a href="show_comments.php">عرض ريفيو</a></li>
+                <li class=""><a href="show_destinations.php">عرض الوجهات</a></li>
                 <li class=""><a href="show_reports.php">عرض البلاغات</a></li>
-                <li class=""><a href="show_tourists.php">أدارة السياح</a></li>
+                <!--                <li class=""><a href="show_tourists.php">إدارة السياح</a></li>-->
                 <li><a href="../logout.php">تسجيل الخروج</a></li>
             </ul>
 
@@ -154,46 +163,65 @@ if ($successMsg): ?>
     </div>
 <?php
 endif; ?>
-<div class="justify-content-center d-flex text-center center-div bg-white p-5 rounded shadow">
-    <form method="post" action="<?php
-    echo htmlspecialchars($_SERVER['PHP_SELF']) ?>">
+<div style="height: 70vh">
+    <div class="justify-content-center d-flex text-center center-div bg-white p-5 rounded shadow" style="margin-top:
+190px; ">
+        <form method="post" action="<?php
+        echo htmlspecialchars($_SERVER['PHP_SELF']) ?>" enctype="multipart/form-data">
 
-        <div class="mb-3">
-            <label class="form-label" for="name">اسم المدينة</label>
-            <input type="text" class="form-control" id="name" name="name" value="<?php
-            echo $name ?>"/>
-            <span class="error"> <?php
-                echo $nameError ?></span>
-        </div>
+            <div class="mb-3">
+                <label class="form-label" for="name">اسم المدينة</label>
+                <input type="text" class="form-control" id="name" name="name" value="<?php
+                echo $name ?>"/>
+                <span class="error"> <?php
+                    echo $nameError ?></span>
+            </div>
 
-        <div class="mb-3">
-            <label class="form-label" for="day">تاريخ اليوم</label>
-            <input type="date" class="form-control" id="day" name="day" value="<?php
-            echo $day ?>"/>
-            <span class="error"> <?php
-                echo $dayError ?></span>
-        </div>
-        <div class="mb-3">
-            <label class="form-label" for="weather">الطقس</label>
-            <input type="text" class="form-control" id="weather" name="weather"/>
-            <span class="error"> <?php
-                echo $weatherError ?></span>
-        </div>
+            <div class="mb-3">
+                <label class="form-label" for="description">وصف المدينة</label>
+                <textarea name="description" id="description" class="form-control"></textarea>
+                <span class="error"> <?php
+                    echo $descriptionError ?></span>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label" for="weather">الفصل:</label><br>
+                <input required type="radio" id="weatherSummer" name="weather" value="الصيف">
+                <label class="form-check-label ml-1" for="weatherSummer">الصيف</label>
+                <input required type="radio" id="weatherWinter" name="weather" value="الشتاء">
+                <label class="form-check-label ml-1" for="weatherWinter">الشتاء</label>
+                <input required type="radio" id="weatherSpring" name="weather" value="الربيع">
+                <label class="form-check-label ml-1" for="weatherSpring">الربيع</label>
+                <input required type="radio" id="weatherAutumn" name="weather" value="الخريف">
+                <label class="form-check-label ml-1" for="weatherAutumn">الخريف</label>
+                <span class="error"> <?php
+                    echo $weatherError ?></span>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label" for="image">اختيار صورة المدينة</label>
+                <div class="custom-file">
+                    <input type="file" class="custom-file-input" id="image" name="image" >
+                    <label class="custom-file-label" for="image">اختيار صورة المدينة</label>
+                </div>
+                <span class="error"><?php
+                    echo $imageError ?></span>
+            </div>
+
+            <button type="submit" class="btn py-2 px-4 btn-primary" name="addSupervisor">
+                إضافة
+            </button>
+
+        </form>
 
 
-        <button type="submit" class="btn py-2 px-4 btn-primary" name="addSupervisor">
-            إضافة
-        </button>
-
-    </form>
-
-
+    </div>
 </div>
 <!--End add city Section-->
 
 
 <!--Start Footer Section-->
-<div class="site-footer fixed-bottom">
+<div class="site-footer ">
     <div class="inner first">
         <div class="inner dark">
             <div class="container">

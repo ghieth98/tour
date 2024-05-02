@@ -4,7 +4,7 @@ session_start(); // Start the session for user authentication
 include "validate.php"; // Include the file for input validation functions
 include "connection.php"; // Include the file for database connection
 
-$successMsg = $_GET['success_message'] ?? '';
+$successMsg = $_GET['message'] ?? '';
 
 
 // Initialize form variables and set to empty values
@@ -168,7 +168,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <div class="hero hero-inner" style="
     background: url('assets/images/m-k-R1gC_gJaJ14-unsplash.jpg') center;
     background-size: cover;
-    position: relative;">
+    position: relative; ">
     <div class="container">
         <div class="row align-items-center">
             <div class="col-lg-6 mx-auto text-center">
@@ -182,16 +182,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <!--End Hero Section-->
 
 <!--Start Login Section-->
-<div class="untree_co-section" >
+<div class="" style="margin-top: 50px" >
     <div class="container ">
     <?php if ($successMsg):  ?>
-        <div class="d-flex justify-content-center">
+        <div class="d-flex justify-content-center mt-3">
             <div class="alert alert-success w-50 text-center" role="alert">
                 <?php echo $successMsg ?>
             </div>
         </div>
     <?php endif;  ?>
-        <div class="row d-flex justify-content-center align-items-center py-5 mb-5" >
+        <div class="row d-flex justify-content-center align-items-center  mb-5" >
             <div class="col-lg-6 col-xl-6 ">
                 <div class="card text-black shadow-lg" style="border-radius: 25px;">
                     <div class="card-body p-md-5 ">
@@ -246,7 +246,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     </div>
 
 
-<div class="site-footer fixed-bottom ">
+<div class="site-footer  ">
     <div class="inner first">
         <div class="inner dark">
             <div class="container">

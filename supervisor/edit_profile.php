@@ -104,9 +104,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <ul class="js-clone-nav d-none d-lg-inline-block text-right site-menu float-left">
                 <li class=""><a href="dashboard.php">الصفحة الرئيسية</a></li>
                 <li class=""><a href="edit_password.php">تعديل كلمة المرور</a></li>
-                <li class=""><a href="show_comments.php">عرض ريفيو</a></li>
+                <li class=""><a href="show_destinations.php">عرض الوجهات</a></li>
                 <li class=""><a href="show_reports.php">عرض البلاغات</a></li>
-                <li class=""><a href="show_tourists.php">أدارة السياح</a></li>
+<!--                <li class=""><a href="show_tourists.php">إدارة السياح</a></li>-->
                 <li><a href="../logout.php">تسجيل الخروج</a></li>
             </ul>
 
@@ -146,7 +146,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         </div>
     </div>
 <?php endif;  ?>
-<div class="justify-content-center d-flex text-center center-div bg-white p-5 rounded shadow">
+<div class="justify-content-center d-flex text-center center-div bg-white p-5 rounded shadow" style="margin-top: 122px">
     <form method="post"
           action="<?php
           echo htmlspecialchars($_SERVER['PHP_SELF']) ?>">

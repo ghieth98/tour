@@ -117,9 +117,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <ul class="js-clone-nav d-none d-lg-inline-block text-right site-menu float-left">
                 <li class=""><a href="dashboard.php">الصفحة الرئيسية</a></li>
                 <li class=""><a href="edit_password.php">تعديل كلمة المرور</a></li>
-                <li class=""><a href="show_comments.php">عرض ريفيو</a></li>
+                <li class=""><a href="show_destinations.php">عرض الوجهات</a></li>
                 <li class=""><a href="show_reports.php">عرض البلاغات</a></li>
-                <li class=""><a href="show_tourists.php">أدارة السياح</a></li>
+<!--                <li class=""><a href="show_tourists.php">إدارة السياح</a></li>-->
                 <li><a href="../logout.php">تسجيل الخروج</a></li>
             </ul>
 
@@ -136,7 +136,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 <!--Start Hero Section-->
 <div class="hero hero-inner">
-    <div class="container">
+    <div class="">
         <div class="row align-items-center">
             <div class="col-lg-6 mx-auto text-center">
                 <div class="intro-wrap">
@@ -153,13 +153,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <!--Start Our ٍSupervisor Section-->
 
 <?php if ($successMsg):  ?>
-    <div id="successMessage" class="d-flex justify-content-center py-3">
+    <div id="successMessage" class="d-flex justify-content-center py-2">
         <div class="alert alert-success w-25 text-center"  role="alert">
             <?php echo $successMsg ?>
         </div>
     </div>
 <?php endif;  ?>
-<div class="justify-content-center d-flex text-center center-div bg-white mt-5 p-5 rounded shadow">
+<div class="justify-content-center d-flex text-center center-div bg-white  p-5 rounded shadow" style="margin-top:
+ 138px; margin-bottom: 120px">
     <form method="post"
           action="<?php
           echo htmlspecialchars($_SERVER['PHP_SELF']) ?>">

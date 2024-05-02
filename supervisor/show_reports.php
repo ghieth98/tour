@@ -16,7 +16,8 @@ $query = $con->prepare("
         report.*,
         t.name AS tourist_name,
         r.body AS reply_body,
-        rv.body AS review_body
+        rv.body AS review_body, 
+        t.*
     FROM
         report
     JOIN
@@ -98,9 +99,9 @@ $successMsg = $_GET['success_message'] ?? '';
             <ul class="js-clone-nav d-none d-lg-inline-block text-right site-menu float-left">
                 <li class=""><a href="dashboard.php">الصفحة الرئيسية</a></li>
                 <li class=""><a href="edit_profile.php">تعديل بيانات الملف الشخصي</a></li>
-                <li class=""><a href="show_comments.php">عرض ريفيو</a></li>
+                <li class=""><a href="show_destinations.php">عرض الوجهات</a></li>
                 <li class=""><a href="show_reports.php">عرض البلاغات</a></li>
-                <li class=""><a href="show_tourists.php">أدارة السياح</a></li>
+<!--                <li class=""><a href="show_tourists.php">إدارة السياح</a></li>-->
                 <li><a href="../logout.php">تسجيل الخروج</a></li>
             </ul>
 
@@ -144,7 +145,8 @@ $successMsg = $_GET['success_message'] ?? '';
     <table class="table align-middle mb-0 ">
         <thead class="text-center">
         <tr>
-            <th scope="col">الاسم</th>
+            <th scope="col">الاسم السائح</th>
+            <th scope="col">البريد الإلكتروني</th>
             <th scope="col">نص التعليق/الرد</th>
             <th scope="col">تاريخ التعليق</th>
             <th scope="col"> ألإجراءات</th>
@@ -157,6 +159,9 @@ $successMsg = $_GET['success_message'] ?? '';
 
                 <td>
                     <?php echo $report['tourist_name'] ?>
+                </td>
+                <td>
+                    <?php echo $report['email'] ?>
                 </td>
 
                 <td>
@@ -195,6 +200,36 @@ $successMsg = $_GET['success_message'] ?? '';
                                 </button>
                             </form>
                         <?php endif;  ?>
+
+                        <form action="ban_tourist.php?tourist_id=<?php echo $report['tourist_id'] ?>"
+                              method="post" onsubmit=" <?php if ($report['ban'] === 'unbanned')  : ?>
+                            return confirm('هل تريد حظر هذا السائح ؟');
+                        <?php elseif ($report['ban'] === 'banned' || $report['ban'] === 'temporary'): ?>
+                            return confirm('هل تريد رفع الحظر عن هذا السائح؟')
+                        <?php endif; ?>"
+                              style="display: inline;">
+                            <?php if ($report['ban'] === 'unbanned') : ?>
+<!--                                <select name="ban" id="ban">-->
+<!--                                    <option name="banned" value="banned">-->
+<!--                                        حظر-->
+<!--                                    </option>-->
+<!--                                    <option name="temporary" value="temporary">-->
+<!--                                        حظر مؤقت-->
+<!--                                    </option>-->
+<!--                                </select>-->
+                                <button type="submit" name="ban" value="banned" class="btn btn-primary px-4 py-2">
+                                    حظر السائح
+                                </button>
+                                <button type="submit" name="ban" value="temporary" class="btn btn-primary px-4 py-2">
+                                    حظر مؤقت للسائح
+                                </button>
+                            <?php elseif ($report['ban'] === 'banned' || $report['ban'] === 'temporary'): ?>
+                                <button name="ban" class="btn btn-primary px-4 py-2" value="unbanned" type="submit">
+                                    رفع الحظر
+                                </button>
+                            <?php endif; ?>
+                        </form>
+
                     </div>
                 </td>
             </tr>

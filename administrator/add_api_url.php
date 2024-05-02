@@ -1,50 +1,35 @@
 <?php
 
-// Start the session
+// Start session to maintain user's session data
 session_start();
-
-// Include validation functions and database connection
-include "../validate.php";
-include "../connection.php";
 if (!(isset($_SESSION['email']))) {
     header('Location../login.php');
 }
-// Initialize variables
-$password = $name ='';
- $nameError =  '';
-$successMsg = $_GET['success_message'] ?? '';
+// Include necessary files for validation and database connection
+include "../validate.php";
+include "../connection.php";
 
-// Get tourist email from session
-$touristEmail = $_SESSION['email'];
+// Initialize variables for form fields and error messages
+$url = '';
+$urlError = '';
+$successMsg = '';
 
-// Query the tourist data from the database based on email
-$query = $con->prepare("SELECT * FROM tourist WHERE email=?");
-$query->execute([$touristEmail]);
-
-// Fetch the tourist data
-$tourist = $query->fetch();
-
-// Check if the form is submitted
+// Check if form is submitted via POST method
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    // Validate and encode the password
-    $name = validate($_POST['name']);
+    // Sanitize and validate form inputs
+    $url = validate($_POST['url']);
 
-
-    // Check if name is empty
-    if (empty($name)) {
-        $nameError = 'برجاء أدخال اسم المستخدم';
-    } else {
-        // Update password and name in the database
-        $stmt = $con->prepare("UPDATE tourist SET name=?  WHERE email=?");
-        $stmt->execute([$name, $touristEmail]);
-
-        // Set success message and redirect
-        $successMsg = 'تم تعديل بيانات الملف الشخصي بنجاح';
-        header("Location: edit_profile.php?success_message=".urlencode($successMsg));
-        exit;
+    if (empty($url)) {
+        $urlError = 'الرجاء إدخال الرابط';
+    }else{
+        $stmt = $con->prepare("INSERT INTO api_records (url) VALUES (?)");
+        $stmt->execute([$url]);
+        $successMsg = 'تم الإضافة بنجاح';
+        // Redirect to dashboard.php page with success message
+        header("Location:dashboard.php?success_message=".urlencode($successMsg));
+        exit; // Exit to prevent further execution after redirection
     }
 }
-
 ?>
 
 
@@ -105,8 +90,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
             <ul class="js-clone-nav d-none d-lg-inline-block text-right site-menu float-left">
                 <li class=""><a href="dashboard.php">الصفحة الرئيسية</a></li>
-                <li class=""><a href="edit_password.php">تعديل بيانات كلمة المرور</a></li>
-                <li class=""><a href="test.php">الاختبار</a></li>
+                <li class=""><a href="edit_profile.php">تعديل بيانات الملف الشخصي</a></li>
+                <li class=""><a href="add_api_url.php">أضافة رابط الربط</a></li>
                 <li><a href="../logout.php">تسجيل الخروج</a></li>
             </ul>
 
@@ -127,7 +112,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         <div class="row align-items-center">
             <div class="col-lg-6 mx-auto text-center">
                 <div class="intro-wrap">
-                    <h1 class="mb-0">تعديل بيانات الملف الشخصي</h1>
+                    <h1 class="mb-0">اضافة رابط جديد</h1>
 
                 </div>
             </div>
@@ -135,7 +120,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     </div>
 </div>
 <!--End Hero Section-->
-
 
 <!--Start Our ٍSupervisor Section-->
 
@@ -149,26 +133,27 @@ if ($successMsg): ?>
     </div>
 <?php
 endif; ?>
-<div class="justify-content-center d-flex text-center center-div bg-white p-5 rounded shadow" style="margin-top: 134px">
-    <form method="post"
-          action="<?php
-          echo htmlspecialchars($_SERVER['REQUEST_URI']) ?>">
+<div class="justify-content-center d-flex text-center center-div bg-white p-5 rounded shadow" style="margin-top: 120px">
+    <form method="post" action="<?php
+    echo htmlspecialchars($_SERVER['REQUEST_URI']) ?>">
 
         <div class="mb-3">
-            <label for="name" class="form-label">الاسم</label>
-            <input type="text" class="form-control" id="name" name="name" value="<?php
-            echo $tourist['name'] ?>"/>
+            <label class="form-label" for="url">رابط الربط</label>
+            <input type="url" class="form-control" id="url" name="url"/>
             <span class="error"> <?php
-                echo $nameError ?></span>
+                echo $urlError ?></span>
         </div>
 
 
-        <button type="submit" class="btn py-2 px-4 btn-primary" name="editProfile">
-            تعديل البيانات الشخصية
+        <button type="submit" class="btn py-2 px-4 btn-primary" name="addUrl">
+            إضافة
         </button>
 
     </form>
 </div>
+<!--End Our Supervisor Section-->
+
+
 <!--Start Footer Section-->
 <div class="site-footer fixed-bottom">
     <div class="inner first">
@@ -194,6 +179,7 @@ endif; ?>
         <span class="sr-only">Loading...</span>
     </div>
 </div>
+
 <script src="../assets/js/jquery-3.4.1.min.js"></script>
 <script src="../assets/js/popper.min.js"></script>
 <script src="../assets/js/bootstrap.min.js"></script>
@@ -208,5 +194,7 @@ endif; ?>
 <script src="../assets/js/typed.js"></script>
 <script src="../assets/js/custom.js"></script>
 
+
 </body>
+
 </html>

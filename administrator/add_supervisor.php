@@ -52,20 +52,22 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
         $mail->isSMTP();
         $mail->Host = 'smtp.gmail.com';
+        $mail->CharSet = 'UTF-8';
+        $mail->Encoding = "base64";
         $mail->Port = 587;
         $mail->SMTPAuth = true;
         $mail->SMTPSecure = 'tls';
 
-        $mail->Username = ''; //gmail here
-        $mail->Password = ''; // password here
+        $mail->Username = 'hossamghieth@gmail.com'; //gmail here
+        $mail->Password = 'aagqtfmyhuelfkac'; // password here
 
-        $mail->setFrom('', 'Supervisor Credentials'); //Insert gmail here
+        $mail->setFrom('hossamghieth@gmail.com', 'كلمة مرور مشرف التوصية بالجولات'); //Insert gmail here
 
         $mail->addAddress($email);
 
         $mail->isHTML(true);
-        $mail->Subject = "Supervisor Credentials";
-        $mail->Body = "<p>عزيزي المشرف/ ".$name.", </p>
+        $mail->Subject = "كلمة مرور مشرف التوصية بالجولات";
+        $mail->Body = "<p>عزيزي المشرف/ ".$name.", 
                      <h3>كلمة المرور الخاصة بك هى $password <br>
                      </h3>
                 <br><br>
@@ -140,6 +142,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <ul class="js-clone-nav d-none d-lg-inline-block text-right site-menu float-left">
                 <li class=""><a href="dashboard.php">الصفحة الرئيسية</a></li>
                 <li class=""><a href="edit_profile.php">تعديل بيانات الملف الشخصي</a></li>
+                <li class=""><a href="add_api_url.php">أضافة رابط الربط</a></li>
                 <li><a href="../logout.php">تسجيل الخروج</a></li>
             </ul>
 
@@ -181,7 +184,7 @@ if ($successMsg): ?>
     </div>
 <?php
 endif; ?>
-<div class="justify-content-center d-flex text-center center-div bg-white p-5 rounded shadow">
+<div class="justify-content-center d-flex text-center center-div bg-white p-5 rounded shadow" style="margin-top: 120px">
     <form method="post" action="<?php
     echo htmlspecialchars($_SERVER['PHP_SELF']) ?>">
 
@@ -193,14 +196,13 @@ endif; ?>
                 echo $nameError ?></span>
         </div>
 
-<div class="mb-3">
-    <label class="form-label" for="email">البريد الإلكتروني</label>
-    <input type="email" class="form-control" id="email" name="email" value="<?php
-    echo $email ?>"/>
-    <span class="error"> <?php
-        echo $emailError ?></span>
-</div>
-
+        <div class="mb-3">
+            <label class="form-label" for="email">البريد الإلكتروني</label>
+            <input type="email" class="form-control" id="email" name="email" value="<?php
+            echo $email ?>"/>
+            <span class="error"> <?php
+                echo $emailError ?></span>
+        </div>
 
 
         <button type="submit" class="btn py-2 px-4 btn-primary" name="addSupervisor">

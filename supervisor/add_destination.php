@@ -1,4 +1,5 @@
 <?php
+
 // Start session to maintain user's session data
 session_start();
 if (!(isset($_SESSION['email']))) {
@@ -18,11 +19,11 @@ $query->execute();
 $cities = $query->fetchAll();
 
 // Initialize form field variables and error messages
-$name = $description = $workingHours = $phoneNumber = $days = $budget = $city = $range = '';
+$name = $description = $start_time = $end_time = $phoneNumber = $budget = $city = '';
 $age = $needs = $personality = $morningness = $noiseness = $adventurousness = $space = $environment = '';
 
 // Initialize error messages
-$nameError = $descriptionError = $workingHoursError = $phoneNumberError = $daysError = $rangeError = '';
+$nameError = $descriptionError = $start_timeError = $end_timeError = $phoneNumberError = $daysError = '';
 $budgetError = $cityError = $ageError = $needsError = $personalityError = $morningnessError = '';
 $noisenessError = $adventurousnessError = $spaceError = $environmentError = '';
 $imageError = '';
@@ -30,7 +31,7 @@ $successMsg = '';
 
 // Array to store file extensions
 $extensions = [];
-
+$days = [];
 // Check if form is submitted via POST method
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     try {
@@ -40,30 +41,32 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         // Validate form inputs
         $name = validate($_POST['name']);
         $description = validate($_POST['description']);
-        $workingHours = validate($_POST['working_hours']);
         $phoneNumber = validate($_POST['phone_number']);
         $city = validate($_POST['city']);
-        $range = validate($_POST['range']);
+        $start_time = ($_POST['start_time']);
+        $end_time = ($_POST['end_time']);
+//        $range = validate($_POST['range']);
 
         // Perform validation checks and set error messages
         if (empty($name)) {
             $nameError = 'الرجاء أدخال اسم الوجهة';
         } elseif (empty($description)) {
             $descriptionError = 'الرجاء أدخال وصف الوجهة';
-        } elseif (empty($workingHours)) {
+        } elseif (empty($start_time)) {
+            $workingHoursError = 'الرجاء أدخال أوقات العمل';
+        } elseif (empty($end_time)) {
             $workingHoursError = 'الرجاء أدخال أوقات العمل';
         } elseif (empty($city)) {
             $cityError = 'الرجاء أدخال المدينة';
-        } elseif (empty($range)) {
-            $rangeError = 'الرجاء أدخال المدى';
-        } elseif (empty($phoneNumber)) {
+        }
+        elseif (empty($phoneNumber)) {
             $phoneNumberError = 'الرجاء أدخال رقم الهاتف';
         } elseif (!preg_match('/^05\d{8}$/', $phoneNumber)) {
             $phoneNumberError = 'رقم الهاتف غير مسموح حيث يجب ان يبدأ ب 05 و أن يتكون من 10 أرقام';
         } else {
             // Prepare and execute SQL statement to insert new destination
-            $stmt = $con->prepare("INSERT INTO destination (name, description, working_hours, `range`, phone_number, supervisor_id, city_id) VALUES (?, ?, ?, ?, ?, ?, ?)");
-            $stmt->execute([$name, $description, $workingHours, $range, $phoneNumber, $supervisor_id, $city]);
+            $stmt = $con->prepare("INSERT INTO destination (name, description, start_date, end_date, phone_number, supervisor_id, city_id) VALUES (?, ?, ?, ?,?,?,?)");
+            $stmt->execute([$name, $description, $start_time, $end_time, $phoneNumber, $supervisor_id, $city]);
 
             // Get the last inserted destination ID
             $destination_id = $con->lastInsertId();
@@ -78,7 +81,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $adventurousness = validate($_POST['adventurousness']);
             $space = validate($_POST['space']);
             $environment = validate($_POST['environment']);
-            $days = validate($_POST['days']);
+            $days = ($_POST['days']);
 
             // Perform validation checks for attraction fields
             if (empty($days)) {
@@ -103,11 +106,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $environmentError = 'الرجاء أدخال نوع البيئة';
             } else {
                 // Prepare and execute SQL statement to insert data into the attraction table
+                $daysNumber = count($days);
+
                 $stmt = $con->prepare(
                     "INSERT INTO attraction (days, budget, age, needs, personality, morningness, noiseness, adventurousness, space, environment, destination_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
                 );
                 $result = $stmt->execute([
-                    $days,
+                    $daysNumber,
                     $budget,
                     $age,
                     $needs,
@@ -175,8 +180,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     } catch (PDOException $e) {
         // Rollback transaction on error
         $con->rollback();
-        error_log("Transaction error: " . $e->getMessage());
-        echo "Error: " . $e->getMessage();
+        error_log("Transaction error: ".$e->getMessage());
+        echo "Error: ".$e->getMessage();
     }
 }
 ?>
@@ -214,6 +219,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         .success {
             color: green;
         }
+
     </style>
 </head>
 
@@ -239,9 +245,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <ul class="js-clone-nav d-none d-lg-inline-block text-right site-menu float-left">
                 <li class=""><a href="dashboard.php">الصفحة الرئيسية</a></li>
                 <li class=""><a href="edit_profile.php">تعديل بيانات الملف الشخصي</a></li>
-                <li class=""><a href="show_comments.php">عرض ريفيو</a></li>
+                <li class=""><a href="show_destinations.php">عرض الوجهات</a></li>
                 <li class=""><a href="show_reports.php">عرض البلاغات</a></li>
-                <li class=""><a href="show_tourists.php">أدارة السياح</a></li>
+                <!--                <li class=""><a href="show_tourists.php">إدارة السياح</a></li>-->
                 <li><a href="../logout.php">تسجيل الخروج</a></li>
             </ul>
 
@@ -308,22 +314,18 @@ endif; ?>
             </div>
 
             <div class="mb-3">
-                <label class="form-label" for="working_hours">أوقات العمل</label>
-                <input class="form-control" type="text" id="working_hours" name="working_hours"
-                       value="<?php
-                       echo $workingHours ?>"/>
-                <span class="error"> <?php
-                    echo $workingHoursError ?></span>
-            </div>
+                <label class="form-label" for="working_hours">ساعات العمل</label>
+                <div class="mob"><label class="text-grey mr-1">من</label>
+                    <input class="ml-1 form-control" type="time" name="start_time">
+                    <span class="error"> <?php
+                        echo $start_timeError ?></span>
+                </div>
+                <div class="mob mb-2"><label class="text-grey mr-4">إلى</label>
+                    <input class="ml-1 form-control" type="time" name="end_time">
+                    <span class="error"> <?php
+                        echo $end_timeError ?></span>
+                </div>
 
-
-            <div class="mb-3">
-                <label class="form-label" for="range">ساعات العمل</label>
-                <input class="form-control" type="text" id="range" name="range"
-                       value="<?php
-                       echo $range ?>"/>
-                <span class="error"> <?php
-                    echo $rangeError ?></span>
             </div>
 
             <div class="mb-3">
@@ -335,34 +337,13 @@ endif; ?>
                     echo $phoneNumberError ?></span>
             </div>
 
-
-            <div class="mb-3">
-                <label class="form-label" for="days">عدد أيام الجولة:</label>
-                <input type="number" class="form-control" name="days" id="days">
-                <span class="error"> <?php
-                    echo $daysError ?></span>
-            </div>
-
-
-            <div class="mb-3">
-                <label class="form-label" for="budget">ميزانية السائح:</label>
-                <select class="form-control" id="budget" name="budget">
-                    <option value="low">ميزانية منخفضة</option>
-                    <option value="medium">ميزانية متوسطة</option>
-                    <option value="high">ميزانية عالية</option>
-                </select>
-                <span class="error"> <?php
-                    echo $budgetError ?></span>
-            </div>
-
-
             <div class="mb-3">
                 <label class="form-label" for="city">المدينة</label>
                 <select class="form-control" id="city" name="city">
                     <?php
                     foreach ($cities as $city): ?>
                         <option value="
-        <?php
+                         <?php
                         echo $city['city_id'] ?>>">
                             <?php
                             echo $city['name'] ?>
@@ -375,39 +356,84 @@ endif; ?>
             </div>
 
 
+
+
             <div class="mb-3">
-                <label class="form-label" for="age">الفئة العمرية للسائح:</label>
-                <select class="form-control" id="age" name="age">
-                    <option value="child">طفل</option>
-                    <option value="young">شاب</option>
-                    <option value="adult">بالغ</option>
-                    <option value="elderly">كبير فى السن</option>
-                </select>
+                <label class="form-label" for="days">عدد أيام الجولة :</label><br>
+                <input type="checkbox" id="saturday" name="days[]" value="السبت">
+                <label class="form-check-label ml-1" for="saturday">السبت</label>
+                <input type="checkbox" id="sunday" name="days[]" value="الأحد">
+                <label class="form-check-label ml-1" for="sunday">ألأحد</label>
+                <input type="checkbox" id="monday" name="days[]" value="الأثنين">
+                <label class="form-check-label ml-1" for="monday">الأثنين</label>
+                <input type="checkbox" id="tuesday" name="days[]" value="الثلاثاء">
+                <label class="form-check-label ml-1" for="tuesday">الثلاثاء</label>
+                <input type="checkbox" id="wednesday" name="days[]" value="الأربعاء">
+                <label class="form-check-label ml-1" for="wednesday">الأربعاء</label>
+                <input type="checkbox" id="thursday" name="days[]" value="الخميس">
+                <label class="form-check-label ml-1" for="thursday">الخميس</label>
+                <input type="checkbox" id="friday" name="days[]" value="الجمعة">
+                <label class="form-check-label ml-1" for="friday">الجمعة</label>
+                <span class="error"> <?php
+                    echo $daysError ?></span>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label" for="budget">ميزانية السائح:</label><br>
+                <input required type="radio" id="budgetLow" name="budget" value="low">
+                <label class="form-check-label ml-1" for="budgetLow">ميزانية منخفضة</label>
+                <input required type="radio" id="budgetMedium" name="budget" value="medium">
+                <label class="form-check-label ml-1" for="budgetMedium">ميزانية متوسطة</label>
+                <input required type="radio" id="budgetHigh" name="budget" value="high">
+                <label class="form-check-label ml-1" for="budgetHigh">ميزانية عالية</label>
+                <span class="error"> <?php
+                    echo $budgetError ?></span>
+            </div>
+
+
+            <div class="mb-3">
+                <label class="form-label">الفئة العمرية للسائح:</label><br>
+                <input required type="radio" id="ageChild" name="age" value="child">
+                <label class="form-check-label ml-1" for="ageChild">طفل</label>
+                <input required type="radio" id="ageYoung" name="age" value="young">
+                <label class="form-check-label ml-1" for="ageYoung">مراهق</label>
+                <input required type="radio" id="ageAdult" name="age" value="adult">
+                <label class="form-check-label ml-1" for="ageAdult">شاب</label>
+                <input required type="radio" id="ageElderly" name="age" value="elderly">
+                <label class="form-check-label" for="ageElderly">كبير في السن</label>
                 <span class="error"> <?php
                     echo $ageError ?></span>
             </div>
 
             <div class="mb-3">
-                <label class="form-label" for="needs">احتياجات خاصة:</label>
-                <select class="form-control" id="needs" name="needs">
-                    <option value="yes">نعم</option>
-                    <option value="no">لا</option>
-                </select>
+                <label class="form-label" for="needs">احتياجات خاصة:</label><br>
+                <input required type="radio" id="needsYes" name="needs" value="yes">
+                <label class="form-check-label ml-1" for="needsYes">نعم</label>
+                <input required type="radio" id="needsNo" name="needs" value="no">
+                <label class="form-check-label" for="needsNo">لا</label>
                 <span class="error"> <?php
                     echo $needsError ?></span>
             </div>
 
 
             <div class="mb-3">
-                <label class="form-label" for="personality">نوع الوجهة</label>
-                <select class="form-control" id="personality" name="personality">
-                    <option value="night"> للأنشطة الليلية</option>
-                    <option value="morning"> للأنشطة الصباحية</option>
-                    <option value="adventure"> للأنشطة المغامرة</option>
-                    <option value="calm"> للأنشطة الهادئة</option>
-                    <option value="open">للأنشطة منفتحة</option>
-                    <option value="closed">للأنشطة منغلقة</option>
-                </select>
+                <label class="form-label" for="personality">نوع الوجهة</label><br>
+                <input type="radio" id="personalityNight" name="personality"
+                       value="night">
+                <label class="form-check-label ml-1" for="personalityNight"> للأنشطة المسائية</label>
+                <input type="radio" id="personalityAdventure" name="personality"
+                       value="adventure">
+                <label class="form-check-label ml-1" for="personalityAdventure"> للأنشطة
+                    المغامرة</label>
+                <input type="radio" id="personalityCalm" name="personality" value="calm">
+                <label class="form-check-label ml-1" for="personalityCalm"> للأنشطة الهادئة و
+                    المريحة</label><br>
+                <input type="radio" id="personalityOpen" name="personality" value="open">
+                <label class="form-check-label ml-1 mt-1" for="personalityOpen">شخصية متفتحة</label>
+                <input type="radio" id="personalityClosed" name="personality"
+                       value="closed">
+                <label class="form-check-label ml-1" for="personalityClosed">شخصية أكثر تحفظا و
+                    انغلاقا</label>
                 <span class="error"> <?php
                     echo $personalityError ?></span>
             </div>
@@ -423,14 +449,15 @@ endif; ?>
                 <span class="error"> <?php
                     echo $morningnessError ?></span>
             </div>
+
             <div class="mb-3">
                 <label class="form-label">حالة الضجيج:</label><br>
                 <input type="radio" id="loud" name="noiseness" value="loud">
-                <label class="form-check-label" for="loud">صاخب</label>
+                <label class="form-check-label ml-1" for="loud">صاخب</label>
                 <input type="radio" id="quiet" name="noiseness" value="quiet">
-                <label class="form-check-label" for="quiet">هادئ</label>
+                <label class="form-check-label ml-1" for="quiet">هادئ</label>
                 <input type="radio" id="bothNoises" name="noiseness" value="both">
-                <label class="form-check-label" for="bothNoises">كليهما</label>
+                <label class="form-check-label ml-1" for="bothNoises">كليهما</label>
                 <span class="error"> <?php
                     echo $noisenessError ?></span>
             </div>
@@ -438,9 +465,9 @@ endif; ?>
             <div class="mb-3">
                 <label class="form-label">حالة المغامرة:</label><br>
                 <input type="radio" id="adventurous" name="adventurousness" value="adventurous">
-                <label class="form-check-label" for="adventurous">مغامر</label>
+                <label class="form-check-label ml-1" for="adventurous">مغامر</label>
                 <input type="radio" id="unadventurous" name="adventurousness" value="unadventurous">
-                <label class="form-check-label" for="unadventurous">غير مغامر</label>
+                <label class="form-check-label ml-1" for="unadventurous">غير مغامر</label>
                 <span class="error"> <?php
                     echo $adventurousnessError ?></span>
             </div>
@@ -448,11 +475,11 @@ endif; ?>
             <div class="mb-3">
                 <label class="form-label">حالة الفضاء:</label><br>
                 <input type="radio" id="openSpace" name="space" value="open">
-                <label class="form-check-label" for="openSpace">مفتوح</label>
+                <label class="form-check-label ml-1" for="openSpace">مفتوح</label>
                 <input type="radio" id="enclosedSpace" name="space" value="enclosed">
-                <label class="form-check-label" for="enclosedSpace">مغلق</label>
+                <label class="form-check-label ml-1" for="enclosedSpace">مغلق</label>
                 <input type="radio" id="bothSpaces" name="space" value="both">
-                <label class="form-check-label" for="bothSpaces">كليهما</label>
+                <label class="form-check-label ml-1" for="bothSpaces">كليهما</label>
                 <span class="error"> <?php
                     echo $spaceError ?></span>
             </div>
@@ -460,19 +487,21 @@ endif; ?>
             <div class="mb-3">
                 <label class="form-label"> نوع البيئة:</label><br>
                 <input type="radio" id="nature" name="environment" value="nature">
-                <label class="form-check-label" for="nature">طبيعية</label>
+                <label class="form-check-label ml-1" for="nature">طبيعية</label>
                 <input type="radio" id="urban" name="environment" value="urban">
-                <label class="form-check-label" for="urban">حضرية</label>
+                <label class="form-check-label ml-1" for="urban">حضرية</label>
                 <input type="radio" id="bothEnvironments" name="environment" value="both">
-                <label class="form-check-label" for="bothEnvironments">كليهما</label>
+                <label class="form-check-label ml-1" for="bothEnvironments">كليهما</label>
                 <span class="error"> <?php
                     echo $environmentError ?></span>
             </div>
             <div class="mb-3">
-
-                <label class="form-label" for="images">الصور</label>
-                <input class="form-control" type="file" id="images" name="images[]" multiple/>
-                <span class="error"> <?php
+                <label class="form-label" for="images">اختيار صور الوجهات</label>
+                <div class="custom-file">
+                    <input type="file" class="custom-file-input" id="images" name="images[]" multiple>
+                    <label class="custom-file-label" for="images">اختيار صور الوجهات</label>
+                </div>
+                <span class="error"><?php
                     echo $imageError ?></span>
             </div>
 

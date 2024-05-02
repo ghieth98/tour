@@ -1,24 +1,41 @@
 <?php
 
-// Start the session
+// Start the session to allow session variables usage
 session_start();
 if (!(isset($_SESSION['email']))) {
     header('Location../login.php');
 }
-// Include validation functions and database connection
-include "../validate.php";
+// Include necessary files for validation and database connection
 include "../connection.php";
 
+// Retrieve supervisor ID from session
+$supervisor_id = $_SESSION['supervisor_id'];
+
+$city_id = isset($_GET['city_id']) && is_numeric($_GET['city_id']) ?
+    intval($_GET['city_id']) : 0;
+
+// Fetch destinations and their first associated image for the supervisor from the database
+$query = $con->prepare(
+    "
+    SELECT d.*, di.image AS destination_image 
+    FROM destination AS d 
+    JOIN (
+        SELECT destination_id, MIN(destination_image_id) AS first_image_id 
+        FROM tours.destination_images 
+        GROUP BY destination_id
+    ) AS first_images ON d.destination_id = first_images.destination_id 
+    JOIN tours.destination_images AS di ON first_images.first_image_id = di.destination_image_id
+    WHERE supervisor_id=? AND city_id=?
+"
+);
+$query->execute([$supervisor_id, $city_id]);
+$destinations = $query->fetchAll();
+
+// Check if there's a success message passed via GET parameter, if not, set it to an empty string
 $successMsg = $_GET['success_message'] ?? '';
-
-// Fetch all tourists from the database
-$cities = $con->query("SELECT * FROM city");
-
-// Get supervisor email from session
-$supervisorEmail = $_SESSION['email'];
-
-
 ?>
+
+
 <!doctype html>
 <html dir="rtl" lang="ar">
 <head>
@@ -79,7 +96,7 @@ $supervisorEmail = $_SESSION['email'];
                 <li class=""><a href="edit_profile.php">تعديل بيانات الملف الشخصي</a></li>
                 <li class=""><a href="show_destinations.php">عرض الوجهات</a></li>
                 <li class=""><a href="show_reports.php">عرض البلاغات</a></li>
-<!--                <li class=""><a href="show_tourists.php">إدارة السياح</a></li>-->
+                <!--                <li class=""><a href="show_tourists.php">إدارة السياح</a></li>-->
                 <li><a href="../logout.php">تسجيل الخروج</a></li>
             </ul>
 
@@ -100,7 +117,7 @@ $supervisorEmail = $_SESSION['email'];
         <div class="row align-items-center">
             <div class="col-lg-6 mx-auto text-center">
                 <div class="intro-wrap">
-                    <h1 class="mb-0">لوحة تحكم المشرف</h1>
+                    <h1 class="mb-0">عرض الوجهات</h1>
 
                 </div>
             </div>
@@ -109,84 +126,98 @@ $supervisorEmail = $_SESSION['email'];
 </div>
 <!--End Hero Section-->
 
-<div class="px-5 py-5 " style="height: 100vh">
-
-    <?php if ($successMsg):  ?>
-        <div id="successMessage" class="d-flex justify-content-center py-3">
-            <div class="alert alert-success w-25 text-center"  role="alert">
-                <?php echo $successMsg ?>
-            </div>
-        </div>
-    <?php endif;  ?>
+<div class="px-5 py-5 ">
 
     <div class="d-flex align-items-center py-3">
 
         <div>
-            <a class="px-4 btn py-2 btn-primary " href="add_city.php">
-                إضافة مدينة جديدة
+            <a class="px-4 btn py-2 btn-primary " href="add_destination.php">
+                إضافة وجهة جديدة
             </a>
         </div>
-        <div class="px-2 m-5 ">
-            <label for="search">ابحث</label>
-            <input type="text" id="search" placeholder="ابحث هنا...">
-        </div>
+
     </div>
+
+
+    <?php
+    if ($successMsg): ?>
+        <div id="successMessage" class="d-flex justify-content-center py-3">
+            <div class="alert alert-success w-25 text-center" role="alert">
+                <?php
+                echo $successMsg ?>
+            </div>
+        </div>
+    <?php
+    endif; ?>
+
     <table class="table align-middle mb-0 ">
         <thead class="text-center">
         <tr>
             <th scope="col">الصورة</th>
             <th scope="col">الاسم</th>
-            <th scope="col">وصف المدينة</th>
+            <th scope="col">وصف الوجهة</th>
+            <th scope="col">أوقات العمل</th>
+            <th scope="col">رقم الهاتف</th>
             <th scope="col">ألإجراءات</th>
         </tr>
         </thead>
         <tbody class="text-center" id="showSearch">
         <?php
-        foreach ($cities as $city): ?>
+        foreach ($destinations as $destination): ?>
             <tr>
                 <td>
                     <img src="../uploads/<?php
-                    echo $city['city_image'] ?>"
+                    echo $destination['destination_image'] ?>"
                          alt="destination image"
                          style="height: 80px">
                 </td>
-
                 <td>
-                    <a href="show_city_destinations.php?city_id=<?php
-                    echo $city['city_id'] ?>">
+                    <a href="show_comments.php?destination_id=<?php echo $destination['destination_id'] ?>">
                         <?php
-                        echo $city['name'] ?>
+                        echo $destination['name'] ?>
                     </a>
+
                 </td>
                 <td>
                     <p>
-                        <?= substr($city['city_description'], 0, 300) . '...' ?>
+                        <?= substr($destination['description'], 0, 300).'...' ?>
                         <span class="more" style="display: none;">
-                            <?= substr($city['city_description'], 300) ?>
+                            <?= substr($destination['description'], 300) ?>
                         </span>
                         <a class="show-more link-light" onclick="showMore(this)">عرض المزيد </a>
                     </p>
                 </td>
+                <td> من: <?php
+                    echo date("H:i A", strtotime($destination['start_date']));
+                    ?> إلى:
+                    <?php
+                    echo date("H:i A", strtotime($destination['end_date'])); ?></td>
+
+                <td><?php
+                    echo $destination['phone_number'] ?></td>
+
                 <td>
-                    <div style="display: inline;">
-                        <a  class="px-4 btn py-1 btn-primary" href="edit_city.php?city_id=<?php
-                        echo $city['city_id'] ?>">
-                            تعديل
-                        </a>
+                    <div class="d-flex">
+                        <a href="edit_destination.php?destination_id=<?php
+                        echo $destination['destination_id'] ?>"
+                           class="btn btn-primary px-4 py-2 ml-3"
+                           type="button">تعديل</a>
 
-                        <form action="delete_city.php?city_id=<?php
-                        echo $city['city_id'] ?>"
+                        <form action="delete_destination.php?destination_id=<?php
+                        echo $destination['destination_id'] ?>"
                               method="post"
-                              onsubmit="return confirm('هل تريد حذف هذه المدينة ؟');"
-                              style="display: inline;">
-                            <button class="px-4 btn py-1 btn-primary " type="submit">حذف</button>
+                              onsubmit="return confirm('هل تريد حذف هذه الوجهة ؟');"
+                        >
+                            <input type="hidden" name="city_id" value="<?php
+                            echo $city_id ?>">
+                            <button class="btn btn-primary px-4 py-2"
+                                    type="submit">حذف
+                            </button>
                         </form>
-
-
                     </div>
                 </td>
-
-            </tr>        <?php
+            </tr>
+        <?php
         endforeach; ?>
         </tbody>
     </table>
@@ -234,29 +265,6 @@ $supervisorEmail = $_SESSION['email'];
 <script src="../assets/js/custom.js"></script>
 
 <script>
-    $(document).ready(function () {
-        // Store the original HTML content of the table body
-        const originalTableContent = $('#showSearch').html();
-
-        $('#search').on('keyup', function () {
-            let search = $(this).val().trim(); // Trim the search string to handle empty space
-            if (search !== '') {
-                $.ajax({
-                    method: 'POST',
-                    url: 'search-city.php',
-                    data: {name: search},
-                    success: function (response) {
-                        $('#showSearch').html(response);
-                    }
-                });
-            } else {
-                // If search is empty, display the original table content
-                $('#showSearch').html(originalTableContent);
-            }
-        });
-
-    });
-
     function showMore(button) {
         // Get the parent <p> element
         var paragraph = button.parentNode;
@@ -272,11 +280,8 @@ $supervisorEmail = $_SESSION['email'];
             moreText.style.display = "none";
             button.innerHTML = "عرض المزيد"; // Change button text back to "عرض المزيد" (Show More)
         }
-    }
-</script>
+    }</script>
 
 </body>
 
 </html>
-
-

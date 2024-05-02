@@ -25,26 +25,26 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         // Prepare and execute SQL statement to ban the tourist
         $stmt = $con->prepare("UPDATE tourist SET ban=? WHERE tourist_id=?");
         $stmt->execute([$status, $tourist_id]);
-        // Set success message and redirect to show_tourists.php
+        // Set success message and redirect to show_reports.php
         $successMsg = 'تم حظر السائح بنجاح';
-        header("Location: show_tourists.php?success_message=" . urlencode($successMsg));
+        header("Location: show_reports.php?success_message=" . urlencode($successMsg));
         exit; // Exit to prevent further execution after redirection
 
     } elseif ($status === 'temporary') {
         $ban_expiration_date = date('Y-m-d-H-i-s', strtotime('+5 hours'));
         $stmt = $con->prepare("UPDATE tourist SET ban=?, ban_expiration_date=? WHERE tourist_id=?");
         $stmt->execute([$status, $ban_expiration_date, $tourist_id]);
-        $successMsg = 'تم حظر  السائح مؤقتا بنجاح';
-        header("Location: show_tourists.php?success_message=" . urlencode($successMsg));
+        $successMsg = 'تم حظر السائح مؤقتا بنجاح';
+        header("Location: show_reports.php?success_message=" . urlencode($successMsg));
         exit; // Exit to prevent further execution after redirection
     } elseif ($status === 'unbanned') {
         // Prepare and execute SQL statement to unban the tourist
         $stmt = $con->prepare("UPDATE tourist SET ban=?, ban_expiration_date=null WHERE tourist_id=?");
         $stmt->execute([$status, $tourist_id]);
 
-        // Set success message and redirect to show_tourists.php
+        // Set success message and redirect to show_reports.php
         $successMsg = 'تم رفع حظر عن السائح بنجاح';
-        header("Location: show_tourists.php?success_message=" . urlencode($successMsg));
+        header("Location: show_reports.php?success_message=" . urlencode($successMsg));
         exit; // Exit to prevent further execution after redirection
     }
 }

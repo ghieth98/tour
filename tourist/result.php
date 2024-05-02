@@ -1,4 +1,5 @@
 <?php
+
 // Start the session to access session variables
 session_start();
 if (!(isset($_SESSION['email']))) {
@@ -10,6 +11,13 @@ include "../connection.php";
 
 // Include the validate function file if needed
 include "../validate.php";
+
+// Query api_records table for the url
+$queryUrl = $con->prepare("SELECT * FROM api_records ORDER BY api_record_id DESC LIMIT 1");
+$queryUrl->execute();
+$apiRecord = $queryUrl->fetch(PDO::FETCH_ASSOC);
+$url = $apiRecord['url'];
+
 
 // Get the start and end dates from the form submission
 $start_date = $_POST['start_date'];
@@ -67,9 +75,7 @@ $data = [
 
 // Convert the data to a JSON string
 $json_data = json_encode($data);
-
 // Python API Endpoint
-$url = 'http://localhost:5000/recommend/'; // Add api url here ex: https://{url here}/recommend/
 // Prepare the request options
 $requestOptions = array(
     'http' => array(
@@ -78,12 +84,10 @@ $requestOptions = array(
         'content' => $json_data, // Set the content to the JSON data
     ),
 );
-
 // Create the HTTP context
 $httpContext = stream_context_create($requestOptions);
-
 // Make the POST request and retrieve the response
-$response = file_get_contents($url, false, $httpContext);
+$response = file_get_contents($url.'/recommend/', false, $httpContext);
 
 // Decode the JSON response
 $recommendations = json_decode($response, true);
@@ -93,7 +97,6 @@ $recommendations = json_decode($response, true);
 $recommendedDestinations = array_merge($recommendedDestinations, $recommendations);
 // Remove duplicate destination IDs
 $recommendedDestinations = array_unique($recommendedDestinations);
-
 
 
 $query = $con->prepare("

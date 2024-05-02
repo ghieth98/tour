@@ -131,7 +131,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 <!--Start Hero Section-->
 <div class="hero hero-inner">
-    <div class="container">
+    <div class="">
         <div class="row align-items-center">
             <div class="col-lg-6 mx-auto text-center">
                 <div class="intro-wrap">
@@ -155,7 +155,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <?php endif;  ?>
 
 
-<div class="justify-content-center d-flex text-center center-div bg-white p-5 mt-5 rounded shadow">
+<div class="justify-content-center d-flex text-center center-div bg-white p-5  rounded shadow" style="margin-top:
+ 138px; margin-bottom: 120px">
     <form method="post"
       action="<?php
       echo htmlspecialchars($_SERVER['PHP_SELF']) ?>"  >

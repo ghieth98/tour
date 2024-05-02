@@ -171,7 +171,10 @@ $successMsg = $_GET['success_message'] ?? '';
                             <h5 class="card-title"><?php echo $destination['name'] ?></h5>
                         </a>
                         <p class="card-text"><?php echo substr($destination['description'], 0, 300)  ?>...</p>
-                        <p class="text-muted"> أوقات العمل : <?php echo $destination['working_hours'] ?> </p>
+                        <p class="text-muted"> أوقات العمل :  من: <?php
+                            echo date("H:i A", strtotime($destination['start_date']));
+                            ?> إلى:
+                            <?php  echo date("H:i A", strtotime($destination['end_date'])); ?> </p>
                         <p class="text-muted"> اسم المدينة : <?php echo $destination['city_name'] ?> </p>
                         <p class="text-muted">رقم الهاتف: <?php echo $destination['phone_number'] ?></p>
 

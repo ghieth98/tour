@@ -13,8 +13,8 @@ include "../validate.php";
 include "../connection.php";
 
 // Initialize variables for form fields and error messages
-$name = $description = $weather = '';
-$nameError = $descriptionError = $weatherError = $imageError = '';
+$name = $description = $region = $weather = $recommendedDays = '';
+$nameError = $recommendedDaysError = $regionError = $descriptionError = $weatherError = $imageError = '';
 $successMsg = '';
 
 // Check if form is submitted via POST method
@@ -22,7 +22,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Sanitize and validate form inputs
     $name = validate($_POST['name']);
     $description = validate($_POST['description']);
-    $weather = validate($_POST['weather']);
+    $weather = $_POST['weather'] ?? [];
+    $recommendedDays = validate($_POST['recommended_days']);
+    $region = $_POST['region'] ?? [];
 
     $image = $_FILES['image'];
     $extension = pathinfo($image['name'], PATHINFO_EXTENSION);
@@ -42,6 +44,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $weatherError = 'الرجاء أدخال الطقس';
     } elseif (empty($description)) {
         $descriptionError = 'الرجاء أدخال وصف المدينة';
+    } elseif (empty($recommendedDays)) {
+        $recommendedDaysError = 'الرجاء أدخال عدد الأيام المقترحة';
+    } elseif (empty($region)) {
+        $regionError = 'الرجاء أدخال المنطقة';
     } elseif (empty($image['tmp_name'])) { // Check for uploaded file
         $imageError = 'الرجاء أدخال صورة المدينة';
     } elseif (!in_array($extension, ['jpeg', 'png', 'svg', 'jpg'])) {
@@ -49,11 +55,23 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     } else {
         $imageName = $image['name'];
         $uploadPath = '../uploads/'.$imageName;
-        move_uploaded_file($image['tmp_name'], $uploadPath); // Use $image['tmp_name']
+        move_uploaded_file($image['tmp_name'], $uploadPath);
+
+        $weather = json_encode($weather);
+        $region = json_encode($region);
+
+        $stmt = $con->prepare("INSERT INTO city(name, weather, city_description, city_image, recommend_days, region) VALUES (?, ?,?, ?,?,?)");
+        $stmt->execute([
+            $name,
+            $weather,
+            $description,
+            $imageName,
+            $recommendedDays,
+            $region,
+        ]);
+
 
         // If all validations pass, insert new city into the database
-        $stmt = $con->prepare("INSERT INTO city(name, weather, city_description, city_image) VALUES (?, ?, ?, ?)");
-        $stmt->execute([$name, $weather, $description, $imageName]);
         $successMsg = 'تم إضافة مدينة جديدة بنجاح';
         header("Location: dashboard.php?success_message=".urlencode($successMsg));
         exit;
@@ -178,6 +196,14 @@ endif; ?>
             </div>
 
             <div class="mb-3">
+                <label class="form-label" for="recommended_days">عدد الأيام المقترحة</label>
+                <input type="number" class="form-control" id="recommended_days" name="recommended_days" value="<?php
+                echo $recommendedDays ?>"/>
+                <span class="error"> <?php
+                    echo $recommendedDaysError ?></span>
+            </div>
+
+            <div class="mb-3">
                 <label class="form-label" for="description">وصف المدينة</label>
                 <textarea name="description" id="description" class="form-control"></textarea>
                 <span class="error"> <?php
@@ -186,22 +212,36 @@ endif; ?>
 
             <div class="mb-3">
                 <label class="form-label" for="weather">الفصل:</label><br>
-                <input required type="radio" id="weatherSummer" name="weather" value="الصيف">
+                <input type="checkbox" id="weatherSummer" name="weather[]" value="summer">
                 <label class="form-check-label ml-1" for="weatherSummer">الصيف</label>
-                <input required type="radio" id="weatherWinter" name="weather" value="الشتاء">
+                <input type="checkbox" id="weatherWinter" name="weather[]" value="winter">
                 <label class="form-check-label ml-1" for="weatherWinter">الشتاء</label>
-                <input required type="radio" id="weatherSpring" name="weather" value="الربيع">
+                <input type="checkbox" id="weatherSpring" name="weather[]" value="spring">
                 <label class="form-check-label ml-1" for="weatherSpring">الربيع</label>
-                <input required type="radio" id="weatherAutumn" name="weather" value="الخريف">
+                <input type="checkbox" id="weatherAutumn" name="weather[]" value="autumn">
                 <label class="form-check-label ml-1" for="weatherAutumn">الخريف</label>
                 <span class="error"> <?php
                     echo $weatherError ?></span>
             </div>
 
             <div class="mb-3">
+                <label class="form-label" for="weather">المنطقة:</label><br>
+                <input type="checkbox" id="centerRegion" name="region[]" value="center">
+                <label class="form-check-label ml-1" for="centerRegion">المنطقة الوسطي</label>
+                <input type="checkbox" id="eastRegion" name="region[]" value="east">
+                <label class="form-check-label ml-1" for="eastRegion">المنطقة الشرقية</label>
+                <input type="checkbox" id="westRegion" name="region[]" value="west">
+                <label class="form-check-label ml-1" for="westRegion">المنطقة الغربية</label>
+                <input type="checkbox" id="southRegion" name="region[]" value="south">
+                <label class="form-check-label ml-1" for="southRegion">المنطقة الجنوبية</label>
+                <span class="error"> <?php
+                    echo $regionError ?></span>
+            </div>
+
+            <div class="mb-3">
                 <label class="form-label" for="image">اختيار صورة المدينة</label>
                 <div class="custom-file">
-                    <input type="file" class="custom-file-input" id="image" name="image" >
+                    <input type="file" class="custom-file-input" id="image" name="image">
                     <label class="custom-file-label" for="image">اختيار صورة المدينة</label>
                 </div>
                 <span class="error"><?php

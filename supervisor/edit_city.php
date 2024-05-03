@@ -20,8 +20,8 @@ $query->execute([$city_id]);
 $city = $query->fetch();
 
 // Initialize variables for form fields and error messages
-$name = $description = $weather = '';
-$nameError = $descriptionError = $imageError = $weatherError = '';
+$name = $description = $recommendedDays = '';
+$nameError = $recommendedDaysError = $regionError = $descriptionError = $weatherError = $imageError = '';
 $successMsg = '';
 
 // Check if form is submitted via POST method
@@ -29,7 +29,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Sanitize and validate form inputs
     $name = validate($_POST['name']);
     $description = validate($_POST['description']);
-    $weather = validate($_POST['weather']);
+    $recommendedDays = validate($_POST['recommended_days']);
+    $weather = $_POST['weather'] ?? [];
+    $region = $_POST['region'] ?? [];
 
     $oldImage = $_POST['oldImage'];
 
@@ -44,6 +46,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $descriptionError = 'الرجاء أدخال وصف المدينة';
     } elseif (empty($weather)) {
         $weatherError = 'الرجاء أدخال الطقس';
+    } elseif (empty($recommendedDays)) {
+        $recommendedDaysError = 'الرجاء أدخال عدد الأيام المقترحة';
+    } elseif (empty($region)) {
+        $regionError = 'الرجاء أدخال المنطقة';
     } else {
         $imageName = $image['name'];
         if (!empty($imageName)) {
@@ -52,13 +58,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         } else {
             $imageName = $oldImage;
         }
+        $weather = json_encode($weather);
+        $region = json_encode($region);
+
         // If all validations pass, update city in the database
-        $stmt = $con->prepare("UPDATE city SET name=?, city_description=?, weather=?, city_image=? WHERE city_id=?");
+        $stmt = $con->prepare("UPDATE city SET name=?, weather=?, city_description=?, city_image=?, recommend_days=?, region=? WHERE city_id=?");
+
         $stmt->execute([
             $name,
-            $description,
             $weather,
-            $imageName,
+            $description,
+            $imageName, // Assuming city_image comes here
+            $recommendedDays,
+            $region,
             $city_id
         ]);
         $successMsg = 'تم تعديل المدينة بنجاح';
@@ -67,7 +79,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 }
 ?>
-
 
 
 <!doctype html>
@@ -175,6 +186,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 <span class="error"> <?php
                     echo $nameError ?></span>
             </div>
+            <div class="mb-3">
+                <label class="form-label" for="recommended_days">عدد الأيام المقترحة</label>
+                <input type="number" class="form-control" id="recommended_days" name="recommended_days"
+                       value="<?php
+                       echo $city['recommend_days'] ?>"/>
+                <span class="error"> <?php
+                    echo $recommendedDaysError ?></span>
+            </div>
 
             <div class="mb-3">
                 <label class="form-label" for="description">وصف المدينة</label>
@@ -186,23 +205,37 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
             <div class="mb-3">
                 <label class="form-label" for="weather">الفصل:</label><br>
-                <input required type="radio" id="weatherSummer" name="weather" value="الصيف">
+                <input type="checkbox" id="weatherSummer" name="weather[]" value="summer">
                 <label class="form-check-label ml-1" for="weatherSummer">الصيف</label>
-                <input required type="radio" id="weatherWinter" name="weather" value="الشتاء">
+                <input type="checkbox" id="weatherWinter" name="weather[]" value="winter">
                 <label class="form-check-label ml-1" for="weatherWinter">الشتاء</label>
-                <input required type="radio" id="weatherSpring" name="weather" value="الربيع">
+                <input type="checkbox" id="weatherSpring" name="weather[]" value="spring">
                 <label class="form-check-label ml-1" for="weatherSpring">الربيع</label>
-                <input required type="radio" id="weatherAutumn" name="weather" value="الخريف">
+                <input type="checkbox" id="weatherAutumn" name="weather[]" value="autumn">
                 <label class="form-check-label ml-1" for="weatherAutumn">الخريف</label>
                 <span class="error"> <?php
                     echo $weatherError ?></span>
             </div>
 
+            <div class="mb-3">
+                <label class="form-label" for="weather">المنطقة:</label><br>
+                <input type="checkbox" id="centerRegion" name="region[]" value="center">
+                <label class="form-check-label ml-1" for="centerRegion">المنطقة الوسطي</label>
+                <input type="checkbox" id="eastRegion" name="region[]" value="east">
+                <label class="form-check-label ml-1" for="eastRegion">المنطقة الشرقية</label>
+                <input type="checkbox" id="westRegion" name="region[]" value="west">
+                <label class="form-check-label ml-1" for="westRegion">المنطقة الغربية</label>
+                <input type="checkbox" id="southRegion" name="region[]" value="south">
+                <label class="form-check-label ml-1" for="southRegion">المنطقة الجنوبية</label>
+                <span class="error"> <?php
+                    echo $regionError ?></span>
+            </div>
 
             <div class="mb-3">
                 <label class="form-label" for="image">اختيار صورة المدينة</label>
                 <div class="custom-file">
-                    <input type="hidden" id="oldImage" name="oldImage" value="<?php echo $city['city_image'] ?>">
+                    <input type="hidden" id="oldImage" name="oldImage" value="<?php
+                    echo $city['city_image'] ?>">
                     <input type="file" class="custom-file-input" id="image" name="image">
                     <label class="custom-file-label" for="image">اختيار صورة المدينة</label>
                 </div>

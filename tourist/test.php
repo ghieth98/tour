@@ -99,7 +99,7 @@ include "../connection.php";
 
 
 <div class="untree_co-section">
-    <div class="container h-100">
+    <div class="container h-100" style="font-size: 15px">
         <div class="row d-flex justify-content-center align-items-center h-100">
             <div class="col-lg-12 col-xl-12 ">
                 <div class="row justify-content-center ">
@@ -115,6 +115,18 @@ include "../connection.php";
                             <div class="mb-3">
                                 <label class="form-label" for="end_date">إلى تاريخ:</label>
                                 <input required class="form-control" type="date" id="end_date" name="end_date">
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label" for="weather">المنطقة:</label><br>
+                                <input type="checkbox" id="centerRegion" name="region[]" value="center">
+                                <label class="form-check-label ml-1" for="centerRegion">المنطقة الوسطي</label><br>
+                                <input type="checkbox" id="eastRegion" name="region[]" value="east">
+                                <label class="form-check-label ml-1" for="eastRegion">المنطقة الشرقية</label><br>
+                                <input type="checkbox" id="westRegion" name="region[]" value="west">
+                                <label class="form-check-label ml-1" for="westRegion">المنطقة الغربية</label><br>
+                                <input type="checkbox" id="southRegion" name="region[]" value="south">
+                                <label class="form-check-label ml-1" for="southRegion">المنطقة الجنوبية</label><br>
                             </div>
 
                             <div class="mb-3">

@@ -109,13 +109,15 @@ include "../connection.php";
                             <div class="mb-3">
                                 <label class="form-label" for="start_date">من تاريخ:</label>
                                 <input required class="form-control" type="date" id="start_date" name="start_date"
-                                       >
+                                       onchange="calculateDays()">
                             </div>
 
                             <div class="mb-3">
                                 <label class="form-label" for="end_date">إلى تاريخ:</label>
-                                <input required class="form-control" type="date" id="end_date" name="end_date">
+                                <input required class="form-control" type="date" id="end_date" name="end_date"
+                                       onchange="calculateDays()">
                             </div>
+                            <div class="mb-2 mt-2 " id="result"></div>
 
                             <div class="mb-3">
                                 <label class="form-label" for="weather">المنطقة:</label><br>
@@ -161,19 +163,19 @@ include "../connection.php";
 
                             <div class="mb-3">
                                 <label class="form-label">ما الذي يصفك بشكل أفضل:</label><br>
-                                <input  type="checkbox" id="personalityNight" name="personality[]"
+                                <input type="checkbox" id="personalityNight" name="personality[]"
                                        value="night">
                                 <label class="form-check-label" for="personalityNight">محب للأنشطة المسائية</label><br>
-                                <input  type="checkbox" id="personalityAdventure" name="personality[]"
-                                        value="adventure">
+                                <input type="checkbox" id="personalityAdventure" name="personality[]"
+                                       value="adventure">
                                 <label class="form-check-label" for="personalityAdventure">محب للأنشطة
                                     المغامرة</label><br>
-                                <input  type="checkbox" id="personalityCalm" name="personality[]" value="calm">
+                                <input type="checkbox" id="personalityCalm" name="personality[]" value="calm">
                                 <label class="form-check-label" for="personalityCalm"> محب للأنشطة الهادئة و
                                     المريحة</label><br>
-                                <input  type="checkbox" id="personalityOpen" name="personality[]" value="open">
+                                <input type="checkbox" id="personalityOpen" name="personality[]" value="open">
                                 <label class="form-check-label" for="personalityOpen">شخصية متفتحة</label><br>
-                                <input  type="checkbox" id="personalityClosed" name="personality[]"
+                                <input type="checkbox" id="personalityClosed" name="personality[]"
                                        value="closed">
                                 <label class="form-check-label" for="personalityClosed">شخصية أكثر تحفظا و
                                     انغلاقا</label>
@@ -285,6 +287,22 @@ include "../connection.php";
 
 <script src="../assets/js/typed.js"></script>
 <script src="../assets/js/custom.js"></script>
+<script>
+    function calculateDays() {
+        let startDate = document.getElementById("start_date").value;
+        let endDate = document.getElementById("end_date").value;
 
+        if (startDate && endDate) {
+            startDate = new Date(startDate);
+            endDate = new Date(endDate);
+            let difference = endDate.getTime() - startDate.getTime();
+
+            let daysDifference = Math.ceil(difference / (1000 * 3600 * 24));
+            document.getElementById("result").innerText = "عدد الأيام الرحلة: " + daysDifference
+        } else {
+            document.getElementById("result").innerText = "";
+        }
+    }
+</script>
 </body>
 </html>

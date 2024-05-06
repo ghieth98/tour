@@ -227,6 +227,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 <label class="form-check-label ml-1" for="westRegion">المنطقة الغربية</label>
                 <input type="checkbox" id="southRegion" name="region[]" value="south">
                 <label class="form-check-label ml-1" for="southRegion">المنطقة الجنوبية</label>
+                <input type="checkbox" id="northRegion" name="region[]" value="north">
+                <label class="form-check-label ml-1" for="northRegion">المنطقة الشمالية</label>
                 <span class="error"> <?php
                     echo $regionError ?></span>
             </div>

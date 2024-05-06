@@ -14,8 +14,9 @@ include "../validate.php";
 
 // Query api_records table for the url
 
-$city_query = $con->query("SELECT * FROM city ");
+$city_query = $con->query("SELECT * FROM city ORDER BY city_id  ");
 $city_query->execute();
+$cities = $city_query->fetchAll(PDO::FETCH_ASSOC);
 
 
 // Get the start and end dates from the form submission
@@ -34,26 +35,22 @@ $region = $_POST['region'];
 
 $totalDays = 0;
 
-while ($cities = $city_query->fetch(PDO::FETCH_ASSOC)) {
-    if ($cities['recommend_days'] <= $tripLength) {
-        $selectedCities[] = $cities;
-        $totalDays += $cities['recommend_days'];
-    } else {
+foreach ($cities as $city) {
+    if ($totalDays + $city['recommend_days'] <= $tripLength) {
+        $selectedCities[] = $city;
+        $totalDays += $city['recommend_days'];
+    }else{
         break;
     }
 }
-echo '<pre>';
-print_r($selectedCities);
-echo '</pre>';
-if (!empty($selectedCities)) {
-    foreach ($selectedCities as $city) {
-        $cityPercentage = $city['recommend_days'] / $tripLength;
-        $allocatedDays = round($tripLength * $cityPercentage);
-    }
+echo $totalDays;
+// Step 2: Days Distribution
+foreach ($selectedCities as &$city) {
+   echo $percentage = $city['recommend_days'] / $totalDays;
+    $allocatedDays[$city['region']] = round($tripLength * $percentage);
 }
 
-
-// Adjust trip's allocated days if it exceeds trip length
+// Adjust allocated days if exceeds trip length
 $allocatedDaysSum = array_sum(array_column($selectedCities, 'allocated_days'));
 if ($allocatedDaysSum > $tripLength) {
     $diff = $allocatedDaysSum - $tripLength;
@@ -67,173 +64,171 @@ if ($allocatedDaysSum > $tripLength) {
         $diff--;
     }
 }
-echo '<pre>';
-print_r($allocatedDays) ;
-echo '</pre>';
-
-$availableRegions = array("center", "east", "south", "west", "north");
-
-$regions = array_diff($availableRegions, $region);
-
-//echo '<pre>';
-//print_r($regions);
-//echo '</pre>';
 
 echo '<pre>';
-print_r($regions);
+print_r($selectedCities);
 echo '</pre>';
+
+// Step 3: Ordering Cities Based on Regions
+// Define your regions and their priorities
+$regions = array("center", "east", "south", "west", "north");
+
+// Determine available regions
+$availableRegions = array_unique(array_column($selectedCities, 'region'));
+
+// Determine missing regions
+$missingRegions = array_diff($regions, $availableRegions);
+
+// Determine the order of regions
 $regionOrder = array();
-
-if (count($regions) == 0) {
-    $regionOrder = $availableRegions;
+if (count($missingRegions) == 0) {
+    $regionOrder = $regions;
 } else {
-    $regionsCount = count($regions);
-    if ($regionsCount == 1) {
-        $regionOrder[] = array_search(reset($regions), $availableRegions);
-    } elseif ($regionsCount == 2) {
-        if (in_array("center", $regions) && in_array("east", $regions)) {
-            $regionOrder[] = array_search("center", $availableRegions);
-            $regionOrder[] = array_search("east", $availableRegions);
-        } elseif (in_array("center", $regions) && in_array("south", $regions)) {
-            $regionOrder[] = array_search("center", $availableRegions);
-            $regionOrder[] = array_search("south", $availableRegions);
-        } elseif (in_array("center", $regions) && in_array("west", $regions)) {
-            $regionOrder[] = array_search("center", $availableRegions);
-            $regionOrder[] = array_search("west", $availableRegions);
-        } elseif (in_array("center", $regions) && in_array('north', $regions)) {
-            $regionOrder[] = array_search("center", $availableRegions);
-            $regionOrder[] = array_search("north", $availableRegions);
-        } elseif (in_array("east", $regions) && in_array("south", $regions)) {
-            $regionOrder[] = array_search("east", $availableRegions);
-            $regionOrder[] = array_search("south", $availableRegions);
-        } elseif (in_array("east", $regions) && in_array("west", $regions)) {
-            $regionOrder[] = array_search("east", $availableRegions);
-            $regionOrder[] = array_search("west", $availableRegions);
-        } elseif (in_array("east", $regions) && in_array("north", $regions)) {
-            $regionOrder[] = array_search("east", $availableRegions);
-            $regionOrder[] = array_search("north", $availableRegions);
-        } elseif (in_array("south", $regions) && in_array("west", $regions)) {
-            $regionOrder[] = array_search("south", $availableRegions);
-            $regionOrder[] = array_search("west", $availableRegions);
-        } elseif (in_array("south", $regions) && in_array("north", $regions)) {
-            $regionOrder[] = array_search("south", $availableRegions);
-            $regionOrder[] = array_search("north", $availableRegions);
-        } elseif (in_array("west", $regions) && in_array("north", $regions)) {
-            $regionOrder[] = array_search("west", $availableRegions);
-            $regionOrder[] = array_search("north", $availableRegions);
-        }
-    } elseif ($regionsCount == 3) {
+    $missingRegionsCount = count($missingRegions);
+    if ($missingRegionsCount == 1) {
+        $regionOrder[] = array_search(reset($missingRegions), $regions);
+    } elseif ($missingRegionsCount == 2) {
         // Check combinations
-        if (in_array("center", $regions) && in_array("east", $regions) && in_array("south",
-                $regions)) {
-            $regionOrder[] = array_search("center", $availableRegions);
-            $regionOrder[] = array_search("east", $availableRegions);
-            $regionOrder[] = array_search("south", $availableRegions);
-        } elseif (in_array("center", $regions) && in_array("east", $regions) && in_array("west",
-                $regions)) {
-            $regionOrder[] = array_search("center", $availableRegions);
-            $regionOrder[] = array_search("east", $availableRegions);
-            $regionOrder[] = array_search("west", $availableRegions);
-        } elseif (in_array("center", $regions) && in_array("east", $regions) && in_array("north",
-                $regions)) {
-            $regionOrder[] = array_search("center", $availableRegions);
-            $regionOrder[] = array_search("east", $availableRegions);
-            $regionOrder[] = array_search("north", $availableRegions);
-        } elseif (in_array("center", $regions) && in_array("south", $regions) && in_array("west",
-                $regions)) {
-            $regionOrder[] = array_search("center", $availableRegions);
-            $regionOrder[] = array_search("south", $availableRegions);
-            $regionOrder[] = array_search("west", $availableRegions);
-        } elseif (in_array("center", $regions) && in_array("south", $regions) && in_array("north",
-                $regions)) {
-            $regionOrder[] = array_search("center", $availableRegions);
-            $regionOrder[] = array_search("south", $availableRegions);
-            $regionOrder[] = array_search("north", $availableRegions);
-        } elseif (in_array("center", $regions) && in_array("west", $regions) && in_array("north",
-                $regions)) {
-            $regionOrder[] = array_search("center", $availableRegions);
-            $regionOrder[] = array_search("west", $availableRegions);
-            $regionOrder[] = array_search("north", $availableRegions);
-        } elseif (in_array("east", $regions) && in_array("south", $regions) && in_array("west",
-                $regions)) {
-            $regionOrder[] = array_search("east", $availableRegions);
-            $regionOrder[] = array_search("south", $availableRegions);
-            $regionOrder[] = array_search("west", $availableRegions);
-        } elseif (in_array("east", $regions) && in_array("south", $regions) && in_array("north",
-                $regions)) {
-            $regionOrder[] = array_search("east", $availableRegions);
-            $regionOrder[] = array_search("south", $availableRegions);
-            $regionOrder[] = array_search("north", $availableRegions);
-        } elseif (in_array("east", $regions) && in_array("west", $regions) && in_array("north",
-                $regions)) {
-            $regionOrder[] = array_search("east", $availableRegions);
-            $regionOrder[] = array_search("west", $availableRegions);
-            $regionOrder[] = array_search("north", $availableRegions);
-        } elseif (in_array("south", $regions) && in_array("west", $regions) && in_array("north",
-                $regions)) {
-            $regionOrder[] = array_search("south", $availableRegions);
-            $regionOrder[] = array_search("west", $availableRegions);
-            $regionOrder[] = array_search("north", $availableRegions);
+        if (in_array("center", $missingRegions) && in_array("east", $missingRegions)) {
+            $regionOrder[] = array_search("center", $regions);
+            $regionOrder[] = array_search("east", $regions);
+        } elseif (in_array("center", $missingRegions) && in_array("south", $missingRegions)) {
+            $regionOrder[] = array_search("center", $regions);
+            $regionOrder[] = array_search("south", $regions);
+        } elseif (in_array("center", $missingRegions) && in_array("west", $missingRegions)) {
+            $regionOrder[] = array_search("center", $regions);
+            $regionOrder[] = array_search("west", $regions);
+        } elseif (in_array("center", $missingRegions) && in_array("north", $missingRegions)) {
+            $regionOrder[] = array_search("center", $regions);
+            $regionOrder[] = array_search("north", $regions);
+        } elseif (in_array("east", $missingRegions) && in_array("south", $missingRegions)) {
+            $regionOrder[] = array_search("east", $regions);
+            $regionOrder[] = array_search("south", $regions);
+        } elseif (in_array("east", $missingRegions) && in_array("west", $missingRegions)) {
+            $regionOrder[] = array_search("east", $regions);
+            $regionOrder[] = array_search("west", $regions);
+        } elseif (in_array("east", $missingRegions) && in_array("north", $missingRegions)) {
+            $regionOrder[] = array_search("east", $regions);
+            $regionOrder[] = array_search("north", $regions);
+        } elseif (in_array("south", $missingRegions) && in_array("west", $missingRegions)) {
+            $regionOrder[] = array_search("south", $regions);
+            $regionOrder[] = array_search("west", $regions);
+        } elseif (in_array("south", $missingRegions) && in_array("north", $missingRegions)) {
+            $regionOrder[] = array_search("south", $regions);
+            $regionOrder[] = array_search("north", $regions);
+        } elseif (in_array("west", $missingRegions) && in_array("north", $missingRegions)) {
+            $regionOrder[] = array_search("west", $regions);
+            $regionOrder[] = array_search("north", $regions);
         }
-    } elseif ($regionsCount == 4) {
+    } elseif ($missingRegionsCount == 3) {
         // Check combinations
-        if (in_array("center", $regions) && in_array("east", $regions) && in_array("south",
-                $regions) && in_array("west", $regions)) {
-            $regionOrder[] = array_search("center", $availableRegions);
-            $regionOrder[] = array_search("east", $availableRegions);
-            $regionOrder[] = array_search("south", $availableRegions);
-            $regionOrder[] = array_search("west", $availableRegions);
-        } elseif (in_array("center", $regions) && in_array("east", $regions) && in_array("south",
-                $regions) && in_array("north", $regions)) {
-            $regionOrder[] = array_search("center", $availableRegions);
-            $regionOrder[] = array_search("east", $availableRegions);
-            $regionOrder[] = array_search("south", $availableRegions);
-            $regionOrder[] = array_search("north", $availableRegions);
-        } elseif (in_array("center", $regions) && in_array("east", $regions) && in_array("west",
-                $regions) && in_array("north", $regions)) {
-            $regionOrder[] = array_search("center", $availableRegions);
-            $regionOrder[] = array_search("east", $availableRegions);
-            $regionOrder[] = array_search("west", $availableRegions);
-            $regionOrder[] = array_search("north", $availableRegions);
-        } elseif (in_array("center", $regions) && in_array("south", $regions) && in_array("west",
-                $regions) && in_array("north", $regions)) {
-            $regionOrder[] = array_search("center", $availableRegions);
-            $regionOrder[] = array_search("south", $availableRegions);
-            $regionOrder[] = array_search("west", $availableRegions);
-            $regionOrder[] = array_search("north", $availableRegions);
-        } elseif (in_array("east", $regions) && in_array("south", $regions) && in_array("west",
-                $regions) && in_array("north", $regions)) {
-            $regionOrder[] = array_search("east", $availableRegions);
-            $regionOrder[] = array_search("south", $availableRegions);
-            $regionOrder[] = array_search("west", $availableRegions);
-            $regionOrder[] = array_search("north", $availableRegions);
+        if (in_array("center", $missingRegions) && in_array("east", $missingRegions) && in_array("south",
+                $missingRegions)) {
+            $regionOrder[] = array_search("center", $regions);
+            $regionOrder[] = array_search("east", $regions);
+            $regionOrder[] = array_search("south", $regions);
+        } elseif (in_array("center", $missingRegions) && in_array("east", $missingRegions) && in_array("west",
+                $missingRegions)) {
+            $regionOrder[] = array_search("center", $regions);
+            $regionOrder[] = array_search("east", $regions);
+            $regionOrder[] = array_search("west", $regions);
+        } elseif (in_array("center", $missingRegions) && in_array("east", $missingRegions) && in_array("north",
+                $missingRegions)) {
+            $regionOrder[] = array_search("center", $regions);
+            $regionOrder[] = array_search("east", $regions);
+            $regionOrder[] = array_search("north", $regions);
+        } elseif (in_array("center", $missingRegions) && in_array("south", $missingRegions) && in_array("west",
+                $missingRegions)) {
+            $regionOrder[] = array_search("center", $regions);
+            $regionOrder[] = array_search("south", $regions);
+            $regionOrder[] = array_search("west", $regions);
+        } elseif (in_array("center", $missingRegions) && in_array("south", $missingRegions) && in_array("north",
+                $missingRegions)) {
+            $regionOrder[] = array_search("center", $regions);
+            $regionOrder[] = array_search("south", $regions);
+            $regionOrder[] = array_search("north", $regions);
+        } elseif (in_array("center", $missingRegions) && in_array("west", $missingRegions) && in_array("north",
+                $missingRegions)) {
+            $regionOrder[] = array_search("center", $regions);
+            $regionOrder[] = array_search("west", $regions);
+            $regionOrder[] = array_search("north", $regions);
+        } elseif (in_array("east", $missingRegions) && in_array("south", $missingRegions) && in_array("west",
+                $missingRegions)) {
+            $regionOrder[] = array_search("east", $regions);
+            $regionOrder[] = array_search("south", $regions);
+            $regionOrder[] = array_search("west", $regions);
+        } elseif (in_array("east", $missingRegions) && in_array("south", $missingRegions) && in_array("north",
+                $missingRegions)) {
+            $regionOrder[] = array_search("east", $regions);
+            $regionOrder[] = array_search("south", $regions);
+            $regionOrder[] = array_search("north", $regions);
+        } elseif (in_array("east", $missingRegions) && in_array("west", $missingRegions) && in_array("north",
+                $missingRegions)) {
+            $regionOrder[] = array_search("east", $regions);
+            $regionOrder[] = array_search("west", $regions);
+            $regionOrder[] = array_search("north", $regions);
+        } elseif (in_array("south", $missingRegions) && in_array("west", $missingRegions) && in_array("north",
+                $missingRegions)) {
+            $regionOrder[] = array_search("south", $regions);
+            $regionOrder[] = array_search("west", $regions);
+            $regionOrder[] = array_search("north", $regions);
+        }
+    } elseif ($missingRegionsCount == 4) {
+        // Check combinations
+        if (in_array("center", $missingRegions) && in_array("east", $missingRegions) && in_array("south",
+                $missingRegions) && in_array("west", $missingRegions)) {
+            $regionOrder[] = array_search("center", $regions);
+            $regionOrder[] = array_search("east", $regions);
+            $regionOrder[] = array_search("south", $regions);
+            $regionOrder[] = array_search("west", $regions);
+        } elseif (in_array("center", $missingRegions) && in_array("east", $missingRegions) && in_array("south",
+                $missingRegions) && in_array("north", $missingRegions)) {
+            $regionOrder[] = array_search("center", $regions);
+            $regionOrder[] = array_search("east", $regions);
+            $regionOrder[] = array_search("south", $regions);
+            $regionOrder[] = array_search("north", $regions);
+        } elseif (in_array("center", $missingRegions) && in_array("east", $missingRegions) && in_array("west",
+                $missingRegions) && in_array("north", $missingRegions)) {
+            $regionOrder[] = array_search("center", $regions);
+            $regionOrder[] = array_search("east", $regions);
+            $regionOrder[] = array_search("west", $regions);
+            $regionOrder[] = array_search("north", $regions);
+        } elseif (in_array("center", $missingRegions) && in_array("south", $missingRegions) && in_array("west",
+                $missingRegions) && in_array("north", $missingRegions)) {
+            $regionOrder[] = array_search("center", $regions);
+            $regionOrder[] = array_search("south", $regions);
+            $regionOrder[] = array_search("west", $regions);
+            $regionOrder[] = array_search("north", $regions);
+        } elseif (in_array("east", $missingRegions) && in_array("south", $missingRegions) && in_array("west",
+                $missingRegions) && in_array("north", $missingRegions)) {
+            $regionOrder[] = array_search("east", $regions);
+            $regionOrder[] = array_search("south", $regions);
+            $regionOrder[] = array_search("west", $regions);
+            $regionOrder[] = array_search("north", $regions);
         }
     }
 
-    $remainingRegions = array_diff($availableRegions, $regions);
-    foreach ($remainingRegions as $remainingRegion) {
-        if (!in_array($remainingRegion, $regionOrder)) {
-            $regionOrder[] = array_search($remainingRegion, $availableRegions);
+    // Get the rest of the available regions
+    $remainingRegions = array_diff($regions, $missingRegions);
+    foreach ($remainingRegions as $region) {
+        if (!in_array($region, $regionOrder)) {
+            $regionOrder[] = array_search($region, $regions);
         }
     }
 }
 
-
+// Reorder cities based on the region priority
 $orderedCities = array();
 foreach ($regionOrder as $index) {
-    $regionCities = array_filter($selectedCities, function ($city) use ($availableRegions, $index) {
-        return $city['region'] == $availableRegions[$index];
+    $regionCities = array_filter($selectedCities, function ($city) use ($regions, $index) {
+        return $city['region'] == $regions[$index];
     });
     $orderedCities = array_merge($orderedCities, $regionCities);
 }
 
-
-echo '<pre>';
-print_r($orderedCities);
-echo '</pre>';
-
+// If you want to print or use the ordered cities
 foreach ($orderedCities as $city) {
-    echo $city['name'] . ", " . $city['region'] . ", " . $city['allocated_days'] . " days<br>";
+    echo $city['name'].", ".$city['region'].", ".$city['allocated_days']." days<br>";
 }
 
 

@@ -215,10 +215,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <!--Start Navbar Section-->
 <nav class="site-nav">
     <div class="container">
-        <div class="site-navigation">
-            <a class="logo m-0 float-right" href="../index.php">توصية بالجولات <span class="text-primary"></span></a>
+        <div class="site-navigation d-flex justify-content-between align-items-center">
+            <a class="m-0 float-right" href="../index.php">
+                <img src="../assets/images/logo.PNG" alt=""
+                     style="height: 120px; width: 100px; font-weight: bold; color: white;">
+                <span class="text-primary"></span>
+            </a>
 
-            <ul class="js-clone-nav d-none d-lg-inline-block text-right site-menu float-left">
+            <ul class="js-clone-nav d-none d-lg-inline-block text-right site-menu float-left align-items-center" style="font-weight: bold; font-size: 24px;">
                 <li class=""><a href="dashboard.php">الصفحة الرئيسية</a></li>
                 <li class=""><a href="edit_profile.php">تعديل بيانات الملف الشخصي</a></li>
                 <li class=""><a href="show_destinations.php">عرض الوجهات</a></li>
@@ -239,7 +243,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <!--End navbar Section-->
 
 <!--Start Hero Section-->
-<div class="hero hero-inner">
+<div class="hero hero-inner" style="background: url('../assets/images/edge.jpg'); background-size: cover; position:
+relative;">
     <div class="container">
         <div class="row align-items-center">
             <div class="col-lg-6 mx-auto text-center">
@@ -254,245 +259,247 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <!--End Hero Section-->
 
 <!--Start add city Section-->
+<div class="px-5 py-5 d-flex justify-content-center align-items-center" style="min-height: 80vh;">
+    <?php
+    if ($successMsg): ?>
+        <div id="successMessage" class="d-flex justify-content-center py-3">
+            <div class="alert alert-success w-25 text-center" role="alert">
+                <?php
+                echo $successMsg ?>
+            </div>
+        </div>
+    <?php
+    endif; ?>
+    <div class="col-md-5 bg-white rounded shadow p-5 text-center">
 
-<?php
-if ($successMsg): ?>
-    <div id="successMessage" class="d-flex justify-content-center py-3">
-        <div class="alert alert-success w-25 text-center" role="alert">
-            <?php
-            echo $successMsg ?>
+            <form method="post" style="font-size: 17px"
+                  action="<?php
+                  echo htmlspecialchars($_SERVER['REQUEST_URI']) ?>"
+                  enctype="multipart/form-data">
+
+                <div class="mb-3">
+                    <label class="form-label" for="name">اسم الوجهة</label>
+                    <input class="form-control" type="text" id="name" name="name" value="<?php
+                    echo $destination['name'] ?>"/>
+                    <span class="error"> <?php
+                        echo $nameError ?></span>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label" for="description">وصف الوجهة</label>
+                    <textarea class="form-control" name="description"
+                              id="description"><?php
+                        echo $destination['description'] ?></textarea>
+                    <span class="error"> <?php
+                        echo $descriptionError ?></span>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label" for="working_hours">ساعات العمل</label>
+                    <div class="mob"><label class="text-grey mr-1">من</label>
+                        <input class="ml-1 form-control" type="time" name="start_time" value="<?php echo
+                        $destination['start_date'] ?>">
+                        <span class="error"> <?php
+                            echo $start_timeError ?></span>
+                    </div>
+                    <div class="mob mb-2"><label class="text-grey mr-4">إلى</label>
+                        <input class="ml-1 form-control" type="time" name="end_time" value="<?php echo $destination['end_date']
+                        ?>">
+                        <span class="error"> <?php
+                            echo $end_timeError ?></span>
+                    </div>
+
+                </div>
+
+
+
+                <div class="mb-3">
+                    <label class="form-label" for="phone_number">رقم الهاتف</label>
+                    <input class="form-control" type="tel" id="phone_number" name="phone_number"
+                           value="<?php
+                           echo $destination['phone_number'] ?>"/>
+                    <span class="error"> <?php
+                        echo $phoneNumberError ?></span>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label" for="city">المدينة</label>
+                    <select class="form-control" id="city" name="city">
+                        <?php
+                        foreach ($cities as $city): ?>
+                            <option value="
+        <?php
+                            echo $city['city_id'] ?>>">
+                                <?php
+                                echo $city['name'] ?>
+                            </option>
+                        <?php
+                        endforeach; ?>
+                    </select>
+                    <span class="error"> <?php
+                        echo $cityError ?></span>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label" for="days">عدد أيام الجولة :</label><br>
+                    <input type="checkbox" id="saturday" name="days[]" value="السبت">
+                    <label class="form-check-label ml-1" for="saturday">السبت</label>
+                    <input type="checkbox" id="sunday" name="days[]" value="الأحد">
+                    <label class="form-check-label ml-1" for="sunday">ألأحد</label>
+                    <input type="checkbox" id="monday" name="days[]" value="الأثنين">
+                    <label class="form-check-label ml-1" for="monday">الأثنين</label>
+                    <input type="checkbox" id="tuesday" name="days[]" value="الثلاثاء">
+                    <label class="form-check-label ml-1" for="tuesday">الثلاثاء</label>
+                    <input type="checkbox" id="wednesday" name="days[]" value="الأربعاء">
+                    <label class="form-check-label ml-1" for="wednesday">الأربعاء</label>
+                    <input type="checkbox" id="thursday" name="days[]" value="الخميس">
+                    <label class="form-check-label ml-1" for="thursday">الخميس</label>
+                    <input type="checkbox" id="friday" name="days[]" value="الجمعة">
+                    <label class="form-check-label ml-1" for="friday">الجمعة</label>
+                    <span class="error"> <?php
+                        echo $daysError ?></span>
+                </div>
+
+
+                <div class="mb-3">
+                    <label class="form-label" for="budget">ميزانية السائح:</label><br>
+                    <input required type="radio" id="budgetLow" name="budget" value="low">
+                    <label class="form-check-label ml-1" for="budgetLow">ميزانية منخفضة</label>
+                    <input required type="radio" id="budgetMedium" name="budget" value="medium">
+                    <label class="form-check-label ml-1" for="budgetMedium">ميزانية متوسطة</label>
+                    <input required type="radio" id="budgetHigh" name="budget" value="high">
+                    <label class="form-check-label ml-1" for="budgetHigh">ميزانية عالية</label>
+                    <span class="error"> <?php
+                        echo $budgetError ?></span>
+                </div>
+
+
+                <div class="mb-3">
+                    <label class="form-label">الفئة العمرية للسائح:</label><br>
+                    <input required type="radio" id="ageChild" name="age" value="child">
+                    <label class="form-check-label ml-1" for="ageChild">طفل</label>
+                    <input required type="radio" id="ageYoung" name="age" value="young">
+                    <label class="form-check-label ml-1" for="ageYoung">مراهق</label>
+                    <input required type="radio" id="ageAdult" name="age" value="adult">
+                    <label class="form-check-label ml-1" for="ageAdult">شاب</label>
+                    <input required type="radio" id="ageElderly" name="age" value="elderly">
+                    <label class="form-check-label" for="ageElderly">كبير في السن</label>
+                    <span class="error"> <?php
+                        echo $ageError ?></span>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label" for="needs">احتياجات خاصة:</label><br>
+                    <input required type="radio" id="needsYes" name="needs" value="yes">
+                    <label class="form-check-label ml-1" for="needsYes">نعم</label>
+                    <input required type="radio" id="needsNo" name="needs" value="no">
+                    <label class="form-check-label" for="needsNo">لا</label>
+                    <span class="error"> <?php
+                        echo $needsError ?></span>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label" for="personality">نوع الوجهة</label><br>
+                    <input type="radio" id="personalityNight" name="personality"
+                           value="night">
+                    <label class="form-check-label ml-1" for="personalityNight"> للأنشطة المسائية</label>
+                    <input type="radio" id="personalityAdventure" name="personality"
+                           value="adventure">
+                    <label class="form-check-label ml-1" for="personalityAdventure"> للأنشطة
+                        المغامرة</label>
+                    <input type="radio" id="personalityCalm" name="personality" value="calm">
+                    <label class="form-check-label ml-1" for="personalityCalm"> للأنشطة الهادئة و
+                        المريحة</label><br>
+                    <input type="radio" id="personalityOpen" name="personality" value="open">
+                    <label class="form-check-label ml-1 mt-1" for="personalityOpen">شخصية متفتحة</label>
+                    <input type="radio" id="personalityClosed" name="personality"
+                           value="closed">
+                    <label class="form-check-label ml-1" for="personalityClosed">شخصية أكثر تحفظا و
+                        انغلاقا</label>
+                    <span class="error"> <?php
+                        echo $personalityError ?></span>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label"> المدّة:</label><br>
+                    <input type="radio" id="morning" name="morningness" value="morning">
+                    <label class="form-check-label" for="morning">الصباح</label>
+                    <input type="radio" id="evening" name="morningness" value="evening">
+                    <label class="form-check-label" for="evening">المساء</label>
+                    <input type="radio" id="bothMorningEvening" name="morningness" value="both">
+                    <label class="form-check-label" for="bothMorningEvening">كليهما</label>
+                    <span class="error"> <?php
+                        echo $morningnessError ?></span>
+                </div>
+
+
+                <div class="mb-3">
+                    <label class="form-label">حالة الضجيج:</label><br>
+                    <input type="radio" id="loud" name="noiseness" value="loud">
+                    <label class="form-check-label ml-1" for="loud">صاخب</label>
+                    <input type="radio" id="quiet" name="noiseness" value="quiet">
+                    <label class="form-check-label ml-1" for="quiet">هادئ</label>
+                    <input type="radio" id="bothNoises" name="noiseness" value="both">
+                    <label class="form-check-label ml-1" for="bothNoises">كليهما</label>
+                    <span class="error"> <?php
+                        echo $noisenessError ?></span>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">حالة المغامرة:</label><br>
+                    <input type="radio" id="adventurous" name="adventurousness" value="adventurous">
+                    <label class="form-check-label ml-1" for="adventurous">مغامر</label>
+                    <input type="radio" id="unadventurous" name="adventurousness" value="unadventurous">
+                    <label class="form-check-label ml-1" for="unadventurous">غير مغامر</label>
+                    <span class="error"> <?php
+                        echo $adventurousnessError ?></span>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">حالة الفضاء:</label><br>
+                    <input type="radio" id="openSpace" name="space" value="open">
+                    <label class="form-check-label ml-1" for="openSpace">مفتوح</label>
+                    <input type="radio" id="enclosedSpace" name="space" value="enclosed">
+                    <label class="form-check-label ml-1" for="enclosedSpace">مغلق</label>
+                    <input type="radio" id="bothSpaces" name="space" value="both">
+                    <label class="form-check-label ml-1" for="bothSpaces">كليهما</label>
+                    <span class="error"> <?php
+                        echo $spaceError ?></span>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label"> نوع البيئة:</label><br>
+                    <input type="radio" id="nature" name="environment" value="nature">
+                    <label class="form-check-label ml-1" for="nature">طبيعية</label>
+                    <input type="radio" id="urban" name="environment" value="urban">
+                    <label class="form-check-label ml-1" for="urban">حضرية</label>
+                    <input type="radio" id="bothEnvironments" name="environment" value="both">
+                    <label class="form-check-label ml-1" for="bothEnvironments">كليهما</label>
+                    <span class="error"> <?php
+                        echo $environmentError ?></span>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label" for="images">اختيار صور الوجهات</label>
+                    <div class="custom-file">
+                        <input type="file" class="custom-file-input" id="images" name="images" multiple>
+                        <label class="custom-file-label" for="images">اختيار صور الوجهات</label>
+                    </div>
+                    <span class="error"><?php
+                        echo $imageError ?></span>
+                </div>
+
+
+                <button type="submit" style="font-size: 14px; font-weight: bold" class="btn btn-primary py-2 px-4" name="addDestination">
+                    تعديل
+                </button>
+
+            </form>
+
         </div>
     </div>
-<?php
-endif; ?>
-<div class="container">
-    <div class="justify-content-center d-flex text-center   py-5 ">
-        <form method="post" class="bg-white rounded shadow p-5"
-              action="<?php
-              echo htmlspecialchars($_SERVER['REQUEST_URI']) ?>"
-              enctype="multipart/form-data">
-
-            <div class="mb-3">
-                <label class="form-label" for="name">اسم الوجهة</label>
-                <input class="form-control" type="text" id="name" name="name" value="<?php
-                echo $destination['name'] ?>"/>
-                <span class="error"> <?php
-                    echo $nameError ?></span>
-            </div>
-
-            <div class="mb-3">
-                <label class="form-label" for="description">وصف الوجهة</label>
-                <textarea class="form-control" name="description"
-                          id="description"><?php
-                    echo $destination['description'] ?></textarea>
-                <span class="error"> <?php
-                    echo $descriptionError ?></span>
-            </div>
-
-            <div class="mb-3">
-                <label class="form-label" for="working_hours">ساعات العمل</label>
-                <div class="mob"><label class="text-grey mr-1">من</label>
-                    <input class="ml-1 form-control" type="time" name="start_time" value="<?php echo
-                    $destination['start_date'] ?>">
-                    <span class="error"> <?php
-                        echo $start_timeError ?></span>
-                </div>
-                <div class="mob mb-2"><label class="text-grey mr-4">إلى</label>
-                    <input class="ml-1 form-control" type="time" name="end_time" value="<?php echo $destination['end_date']
-                    ?>">
-                    <span class="error"> <?php
-                        echo $end_timeError ?></span>
-                </div>
-
-            </div>
-
-
-
-            <div class="mb-3">
-                <label class="form-label" for="phone_number">رقم الهاتف</label>
-                <input class="form-control" type="tel" id="phone_number" name="phone_number"
-                       value="<?php
-                       echo $destination['phone_number'] ?>"/>
-                <span class="error"> <?php
-                    echo $phoneNumberError ?></span>
-            </div>
-
-            <div class="mb-3">
-                <label class="form-label" for="city">المدينة</label>
-                <select class="form-control" id="city" name="city">
-                    <?php
-                    foreach ($cities as $city): ?>
-                        <option value="
-        <?php
-                        echo $city['city_id'] ?>>">
-                            <?php
-                            echo $city['name'] ?>
-                        </option>
-                    <?php
-                    endforeach; ?>
-                </select>
-                <span class="error"> <?php
-                    echo $cityError ?></span>
-            </div>
-
-            <div class="mb-3">
-                <label class="form-label" for="days">عدد أيام الجولة :</label><br>
-                <input type="checkbox" id="saturday" name="days[]" value="السبت">
-                <label class="form-check-label ml-1" for="saturday">السبت</label>
-                <input type="checkbox" id="sunday" name="days[]" value="الأحد">
-                <label class="form-check-label ml-1" for="sunday">ألأحد</label>
-                <input type="checkbox" id="monday" name="days[]" value="الأثنين">
-                <label class="form-check-label ml-1" for="monday">الأثنين</label>
-                <input type="checkbox" id="tuesday" name="days[]" value="الثلاثاء">
-                <label class="form-check-label ml-1" for="tuesday">الثلاثاء</label>
-                <input type="checkbox" id="wednesday" name="days[]" value="الأربعاء">
-                <label class="form-check-label ml-1" for="wednesday">الأربعاء</label>
-                <input type="checkbox" id="thursday" name="days[]" value="الخميس">
-                <label class="form-check-label ml-1" for="thursday">الخميس</label>
-                <input type="checkbox" id="friday" name="days[]" value="الجمعة">
-                <label class="form-check-label ml-1" for="friday">الجمعة</label>
-                <span class="error"> <?php
-                    echo $daysError ?></span>
-            </div>
-
-
-            <div class="mb-3">
-                <label class="form-label" for="budget">ميزانية السائح:</label><br>
-                <input required type="radio" id="budgetLow" name="budget" value="low">
-                <label class="form-check-label ml-1" for="budgetLow">ميزانية منخفضة</label>
-                <input required type="radio" id="budgetMedium" name="budget" value="medium">
-                <label class="form-check-label ml-1" for="budgetMedium">ميزانية متوسطة</label>
-                <input required type="radio" id="budgetHigh" name="budget" value="high">
-                <label class="form-check-label ml-1" for="budgetHigh">ميزانية عالية</label>
-                <span class="error"> <?php
-                    echo $budgetError ?></span>
-            </div>
-
-
-            <div class="mb-3">
-                <label class="form-label">الفئة العمرية للسائح:</label><br>
-                <input required type="radio" id="ageChild" name="age" value="child">
-                <label class="form-check-label ml-1" for="ageChild">طفل</label>
-                <input required type="radio" id="ageYoung" name="age" value="young">
-                <label class="form-check-label ml-1" for="ageYoung">مراهق</label>
-                <input required type="radio" id="ageAdult" name="age" value="adult">
-                <label class="form-check-label ml-1" for="ageAdult">شاب</label>
-                <input required type="radio" id="ageElderly" name="age" value="elderly">
-                <label class="form-check-label" for="ageElderly">كبير في السن</label>
-                <span class="error"> <?php
-                    echo $ageError ?></span>
-            </div>
-
-            <div class="mb-3">
-                <label class="form-label" for="needs">احتياجات خاصة:</label><br>
-                <input required type="radio" id="needsYes" name="needs" value="yes">
-                <label class="form-check-label ml-1" for="needsYes">نعم</label>
-                <input required type="radio" id="needsNo" name="needs" value="no">
-                <label class="form-check-label" for="needsNo">لا</label>
-                <span class="error"> <?php
-                    echo $needsError ?></span>
-            </div>
-
-            <div class="mb-3">
-                <label class="form-label" for="personality">نوع الوجهة</label><br>
-                <input type="radio" id="personalityNight" name="personality"
-                       value="night">
-                <label class="form-check-label ml-1" for="personalityNight"> للأنشطة المسائية</label>
-                <input type="radio" id="personalityAdventure" name="personality"
-                       value="adventure">
-                <label class="form-check-label ml-1" for="personalityAdventure"> للأنشطة
-                    المغامرة</label>
-                <input type="radio" id="personalityCalm" name="personality" value="calm">
-                <label class="form-check-label ml-1" for="personalityCalm"> للأنشطة الهادئة و
-                    المريحة</label><br>
-                <input type="radio" id="personalityOpen" name="personality" value="open">
-                <label class="form-check-label ml-1 mt-1" for="personalityOpen">شخصية متفتحة</label>
-                <input type="radio" id="personalityClosed" name="personality"
-                       value="closed">
-                <label class="form-check-label ml-1" for="personalityClosed">شخصية أكثر تحفظا و
-                    انغلاقا</label>
-                <span class="error"> <?php
-                    echo $personalityError ?></span>
-            </div>
-
-            <div class="mb-3">
-                <label class="form-label"> المدّة:</label><br>
-                <input type="radio" id="morning" name="morningness" value="morning">
-                <label class="form-check-label" for="morning">الصباح</label>
-                <input type="radio" id="evening" name="morningness" value="evening">
-                <label class="form-check-label" for="evening">المساء</label>
-                <input type="radio" id="bothMorningEvening" name="morningness" value="both">
-                <label class="form-check-label" for="bothMorningEvening">كليهما</label>
-                <span class="error"> <?php
-                    echo $morningnessError ?></span>
-            </div>
-
-
-            <div class="mb-3">
-                <label class="form-label">حالة الضجيج:</label><br>
-                <input type="radio" id="loud" name="noiseness" value="loud">
-                <label class="form-check-label ml-1" for="loud">صاخب</label>
-                <input type="radio" id="quiet" name="noiseness" value="quiet">
-                <label class="form-check-label ml-1" for="quiet">هادئ</label>
-                <input type="radio" id="bothNoises" name="noiseness" value="both">
-                <label class="form-check-label ml-1" for="bothNoises">كليهما</label>
-                <span class="error"> <?php
-                    echo $noisenessError ?></span>
-            </div>
-
-            <div class="mb-3">
-                <label class="form-label">حالة المغامرة:</label><br>
-                <input type="radio" id="adventurous" name="adventurousness" value="adventurous">
-                <label class="form-check-label ml-1" for="adventurous">مغامر</label>
-                <input type="radio" id="unadventurous" name="adventurousness" value="unadventurous">
-                <label class="form-check-label ml-1" for="unadventurous">غير مغامر</label>
-                <span class="error"> <?php
-                    echo $adventurousnessError ?></span>
-            </div>
-
-            <div class="mb-3">
-                <label class="form-label">حالة الفضاء:</label><br>
-                <input type="radio" id="openSpace" name="space" value="open">
-                <label class="form-check-label ml-1" for="openSpace">مفتوح</label>
-                <input type="radio" id="enclosedSpace" name="space" value="enclosed">
-                <label class="form-check-label ml-1" for="enclosedSpace">مغلق</label>
-                <input type="radio" id="bothSpaces" name="space" value="both">
-                <label class="form-check-label ml-1" for="bothSpaces">كليهما</label>
-                <span class="error"> <?php
-                    echo $spaceError ?></span>
-            </div>
-
-            <div class="mb-3">
-                <label class="form-label"> نوع البيئة:</label><br>
-                <input type="radio" id="nature" name="environment" value="nature">
-                <label class="form-check-label ml-1" for="nature">طبيعية</label>
-                <input type="radio" id="urban" name="environment" value="urban">
-                <label class="form-check-label ml-1" for="urban">حضرية</label>
-                <input type="radio" id="bothEnvironments" name="environment" value="both">
-                <label class="form-check-label ml-1" for="bothEnvironments">كليهما</label>
-                <span class="error"> <?php
-                    echo $environmentError ?></span>
-            </div>
-
-            <div class="mb-3">
-                <label class="form-label" for="images">اختيار صور الوجهات</label>
-                <div class="custom-file">
-                    <input type="file" class="custom-file-input" id="images" name="images" multiple>
-                    <label class="custom-file-label" for="images">اختيار صور الوجهات</label>
-                </div>
-                <span class="error"><?php
-                    echo $imageError ?></span>
-            </div>
-
-
-            <button type="submit" class="btn btn-primary py-2 px-4" name="addDestination">
-                تعديل
-            </button>
-
-        </form>
-
-    </div>
 </div>
+
 
 
 <!--Start Footer Section-->

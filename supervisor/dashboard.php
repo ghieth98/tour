@@ -57,7 +57,7 @@ $supervisorEmail = $_SESSION['email'];
 
 <body>
 
-<!--Start mobile toggle section-->
+<!-- Start mobile toggle section -->
 <div class="site-mobile-menu site-navbar-target">
     <div class="site-mobile-menu-header">
         <div class="site-mobile-menu-close">
@@ -66,78 +66,85 @@ $supervisorEmail = $_SESSION['email'];
     </div>
     <div class="site-mobile-menu-body"></div>
 </div>
-<!--End mobile toggle section-->
+<!-- End mobile toggle section -->
 
-<!--Start Navbar Section-->
+<!-- Start Navbar Section -->
 <nav class="site-nav">
     <div class="container">
-        <div class="site-navigation">
-            <a class="logo m-0 float-right" href="../index.php">توصية بالجولات <span class="text-primary"></span></a>
+        <div class="site-navigation d-flex justify-content-between align-items-center">
+            <a class="m-0 float-right" href="../index.php">
+                <img src="../assets/images/logo.PNG" alt=""
+                     style="height: 120px; width: 100px; font-weight: bold; color: white;">
+                <span class="text-primary"></span>
+            </a>
 
-            <ul class="js-clone-nav d-none d-lg-inline-block text-right site-menu float-left">
-                <li class=""><a href="dashboard.php">الصفحة الرئيسية</a></li>
-                <li class=""><a href="edit_profile.php">تعديل بيانات الملف الشخصي</a></li>
-                <li class=""><a href="show_destinations.php">عرض الوجهات</a></li>
-                <li class=""><a href="show_reports.php">عرض البلاغات</a></li>
-<!--                <li class=""><a href="show_tourists.php">إدارة السياح</a></li>-->
+            <ul class="js-clone-nav d-none d-lg-inline-block text-right site-menu float-left align-items-center" style="font-weight:
+            bold; font-size: 24px;">
+                <li><a href="dashboard.php">الصفحة الرئيسية</a></li>
+                <li><a href="edit_profile.php">تعديل بيانات الملف الشخصي</a></li>
+                <li><a href="show_destinations.php">عرض الوجهات</a></li>
+                <li><a href="show_reports.php">عرض البلاغات</a></li>
+                <!-- <li><a href="show_tourists.php">إدارة السياح</a></li> -->
                 <li><a href="../logout.php">تسجيل الخروج</a></li>
             </ul>
 
-            <a class="burger ml-auto float-left site-menu-toggle js-menu-toggle d-inline-block d-lg-none light"
-               data-target="#main-navbar"
-               data-toggle="collapse" href="../index.php">
+            <a class="burger ml-auto float-right site-menu-toggle js-menu-toggle d-inline-block d-lg-none light"
+               data-target="#main-navbar" data-toggle="collapse" href="../index.php">
                 <span></span>
             </a>
-
         </div>
     </div>
 </nav>
-<!--End navbar Section-->
+<!-- End Navbar Section -->
 
-<!--Start Hero Section-->
-<div class="hero hero-inner">
+<!-- Start Hero Section -->
+<div class="hero hero-inner" style="background: url('../assets/images/edge.jpg') ;
+ background-size: cover;
+ position:relative;">
     <div class="container">
         <div class="row align-items-center">
             <div class="col-lg-6 mx-auto text-center">
                 <div class="intro-wrap">
                     <h1 class="mb-0">لوحة تحكم المشرف</h1>
-
                 </div>
             </div>
         </div>
     </div>
 </div>
-<!--End Hero Section-->
+<!-- End Hero Section -->
 
-<div class="px-5 py-5 " style="height: 100vh">
+<div class="px-5 py-5" style="height: 100vh">
 
-    <?php if ($successMsg):  ?>
+    <?php
+    if ($successMsg): ?>
         <div id="successMessage" class="d-flex justify-content-center py-3">
-            <div class="alert alert-success w-25 text-center"  role="alert">
-                <?php echo $successMsg ?>
+            <div class="alert alert-success w-25 text-center" role="alert">
+                <?php
+                echo $successMsg ?>
             </div>
         </div>
-    <?php endif;  ?>
+    <?php
+    endif; ?>
 
     <div class="d-flex align-items-center py-3">
-
         <div>
-            <a class="px-4 btn py-2 btn-primary " href="add_city.php">
+            <a class="px-4 btn py-2 btn-primary" href="add_city.php">
                 إضافة مدينة جديدة
             </a>
         </div>
-        <div class="px-2 m-5 ">
+        <div class="px-2 m-5">
             <label for="search">ابحث</label>
             <input type="text" id="search" placeholder="ابحث هنا...">
         </div>
     </div>
-    <table class="table align-middle mb-0 ">
+
+    <table class="table align-middle mb-0" style="font-size: 17px;">
         <thead class="text-center">
         <tr>
             <th scope="col">الصورة</th>
             <th scope="col">الاسم</th>
             <th scope="col">وصف المدينة</th>
-            <th scope="col">ألإجراءات</th>
+            <th scope="col">الإجراءات</th>
         </tr>
         </thead>
         <tbody class="text-center" id="showSearch">
@@ -146,11 +153,8 @@ $supervisorEmail = $_SESSION['email'];
             <tr>
                 <td>
                     <img src="../uploads/<?php
-                    echo $city['city_image'] ?>"
-                         alt="destination image"
-                         style="height: 80px">
+                    echo $city['city_image'] ?>" alt="destination image" style="height: 80px">
                 </td>
-
                 <td>
                     <a href="show_city_destinations.php?city_id=<?php
                     echo $city['city_id'] ?>">
@@ -160,56 +164,48 @@ $supervisorEmail = $_SESSION['email'];
                 </td>
                 <td>
                     <p>
-                        <?= substr($city['city_description'], 0, 300) . '...' ?>
+                        <?= substr($city['city_description'], 0, 300).'...' ?>
                         <span class="more" style="display: none;">
                             <?= substr($city['city_description'], 300) ?>
                         </span>
-                        <a class="show-more link-light" onclick="showMore(this)">عرض المزيد </a>
+                        <a class="show-more link-light" onclick="showMore(this)">عرض المزيد</a>
                     </p>
                 </td>
                 <td>
                     <div style="display: inline;">
-                        <a  class="px-4 btn py-1 btn-primary" href="edit_city.php?city_id=<?php
+                        <a class="px-4 btn py-1 btn-primary" href="edit_city.php?city_id=<?php
                         echo $city['city_id'] ?>">
                             تعديل
                         </a>
-
                         <form action="delete_city.php?city_id=<?php
-                        echo $city['city_id'] ?>"
-                              method="post"
-                              onsubmit="return confirm('هل تريد حذف هذه المدينة ؟');"
+                        echo $city['city_id'] ?>" method="post" onsubmit="return confirm('هل تريد حذف هذه المدينة؟');"
                               style="display: inline;">
-                            <button class="px-4 btn py-1 btn-primary " type="submit">حذف</button>
+                            <button class="px-4 btn py-1 btn-primary" type="submit">حذف</button>
                         </form>
-
-
                     </div>
                 </td>
-
-            </tr>        <?php
+            </tr>
+        <?php
         endforeach; ?>
         </tbody>
     </table>
 </div>
 
-
-<!--Start Footer Section-->
-<div class="site-footer ">
+<!-- Start Footer Section -->
+<div class="site-footer">
     <div class="inner first">
         <div class="inner dark">
             <div class="container">
                 <div class="row text-center">
-                    <div class="col-md-8  mb-md-0 mx-auto">
-                        <p>
-                            جميع الحقوق محفوظة للتوصية بالجولات @ 2024
-                        </p>
+                    <div class="col-md-8 mb-md-0 mx-auto">
+                        <p>جميع الحقوق محفوظة للتوصية بالجولات @ 2024</p>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
-<!--End Footer Section-->
+<!-- End Footer Section -->
 
 
 <div id="overlayer"></div>

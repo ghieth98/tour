@@ -61,10 +61,13 @@ include "../connection.php";
 <!--Start Navbar Section-->
 <nav class="site-nav">
     <div class="container">
-        <div class="site-navigation">
-            <a class="logo m-0 float-right" href="../index.php">توصية بالجولات <span class="text-primary"></span></a>
+        <div class="site-navigation d-flex justify-content-between align-items-center">
+            <a class="m-0 float-right" href="../index.php">
+                <img src="../assets/images/logo.PNG" alt="" style="height: 120px; width: 100px; font-weight: bold; color: white;">
+                <span class="text-primary"></span>
+            </a>
 
-            <ul class="js-clone-nav d-none d-lg-inline-block text-right site-menu float-left">
+            <ul class="js-clone-nav d-none d-lg-inline-block text-right site-menu float-left align-items-center" style="font-weight: bold; font-size: 24px;">
                 <li class=""><a href="dashboard.php">الصفحة الرئيسية</a></li>
                 <li class=""><a href="edit_password.php">تعديل بيانات كلمة المرور</a></li>
                 <li class=""><a href="test.php">الاختبار</a></li>
@@ -83,10 +86,11 @@ include "../connection.php";
 <!--End navbar Section-->
 
 <!--Start Hero Section-->
-<div class="hero hero-inner">
+<div class="hero hero-inner" style="background: url('../assets/images/m-k-R1gC_gJaJ14-unsplash.jpg'); background-size: cover; position:
+relative;">
     <div class="container">
         <div class="row align-items-center">
-            <div class="col-lg-6 mx-auto text-center">
+            <div class="col-lg-8 mx-auto text-center">
                 <div class="intro-wrap">
                     <h1 class="mb-0">اختبار التوصية بالجولات</h1>
 
@@ -99,11 +103,11 @@ include "../connection.php";
 
 
 <div class="untree_co-section">
-    <div class="container h-100" style="font-size: 15px">
+    <div class="container h-100" style="font-size: 17px">
         <div class="row d-flex justify-content-center align-items-center h-100">
             <div class="col-lg-12 col-xl-12 ">
                 <div class="row justify-content-center ">
-                    <div class="col-md-10 col-lg-12 col-xl-12 order-2 order-lg-1">
+                    <div class="col-md-10 col-lg-12 col-xl-12 order-2 order-lg-1" style="border-radius: 25px;">
                         <form class="mx-1 mx-md-4 text-right bg-white p-5 rounded shadow" data-aos="fade-up"
                               data-aos-delay="500" action="result.php" method="post">
                             <div class="mb-3">

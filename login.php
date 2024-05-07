@@ -128,27 +128,35 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 <!--Start Navbar Section-->
 <nav class="site-nav">
-    <div class="container ">
+    <div class="container">
         <div class="site-navigation">
-            <a class="logo m-0 float-right" href="index.php">توصية بالجولات <span class="text-primary"></span></a>
+            <a class="logo m-0 float-right" >
+                <img src="assets/images/logo.PNG" alt="" style="height: 160px; padding-bottom: 50px">
+                <span class="text-primary">
+                </span>
+            </a>
 
-            <ul class="js-clone-nav d-none d-lg-inline-block text-right site-menu float-left">
+            <ul class="js-clone-nav d-none d-lg-inline-block text-right site-menu float-left" style="margin-left:
+            40px; margin-top: 10px; font-size: 24px; font-weight: bold">
+
                 <li class="active"><a href="index.php">الرئيسية</a></li>
-                <li class="active"><a href="show_cities.php">المدن</a></li>
-                <li><a href="destination.php">الوجهات</a></li>
+                <li class="active"><a href="signup.php">تسجيل جديد</a></li>
 
                 <?php if (isset($tourist_id)): ?>
-                    <li><a href="logout.php">تسجيل الخروج</a></li>
                     <li><a class="fa-solid fa-user" href="tourist/dashboard.php"></a></li>
+                    <li><a href="logout.php">تسجيل الخروج</a></li>
+
                 <?php elseif(isset($supervisor_id)):  ?>
-                    <li><a href="logout.php">تسجيل الخروج</a></li>
+
                     <li><a class="fa-solid fa-user" href="supervisor/dashboard.php"></a></li>
-                <?php elseif(isset($administrator_id)):  ?>
                     <li><a href="logout.php">تسجيل الخروج</a></li>
+
+                <?php elseif(isset($administrator_id)):  ?>
+
                     <li><a class="fa-solid fa-user" href="administrator/dashboard.php"></a></li>
-                <?php else:  ?>
-                    <li><a href="signup.php">تسجيل جديد</a></li>
-                    <li><a href="login.php">تسجيل الدخول</a></li>
+                    <li><a href="logout.php">تسجيل الخروج</a></li>
+
+
                 <?php endif;  ?>
 
             </ul>
@@ -173,7 +181,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         <div class="row align-items-center">
             <div class="col-lg-6 mx-auto text-center">
                 <div class="intro-wrap">
-                    <h1 class="mb-0">تسجيل الدخول</h1>
+
                 </div>
             </div>
         </div>
@@ -192,7 +200,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         </div>
     <?php endif;  ?>
         <div class="row d-flex justify-content-center align-items-center  mb-5" >
-            <div class="col-lg-6 col-xl-6 ">
+            <div class="col-lg-6 col-xl-8 ">
                 <div class="card text-black shadow-lg" style="border-radius: 25px;">
                     <div class="card-body p-md-5 ">
                         <div class="row justify-content-center ">
@@ -201,7 +209,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                 <h2 class="text-center mb-5">تسجيل الدخول</h2>
 
                                 <form method="post" action="<?php
-                                echo htmlspecialchars($_SERVER['PHP_SELF']) ?>" class="mx-1 mx-md-4">
+                                echo htmlspecialchars($_SERVER['PHP_SELF']) ?>" class="mx-1 mx-md-4" style="font-size: 17px">
 
 
                                     <div class="d-flex flex-row align-items-center mb-4">
@@ -226,11 +234,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 
                                     <a class="d-flex mb-3" href="forgot_password.php">
-                                        نسيت كلمة المرور ؟
+                                        هل نسيت كلمة المرور ؟
                                     </a>
 
                                     <div class="d-flex justify-content-center mx-4 mb-2 mb-lg-2">
-                                        <button type="submit" name="register" class="btn btn-primary btn-lg">
+                                        <button type="submit" name="login" style="font-size: 17px" class="btn
+                                        btn-primary
+                                         btn-lg">
                                             تسجيل الدخول
                                         </button>
                                     </div>

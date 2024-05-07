@@ -10,8 +10,8 @@ if (!(isset($_SESSION['email']))) {
     header('Location../login.php');
 }
 // Initialize variables
-$password = $name ='';
- $nameError =  '';
+$name = $password = $confirmPassword = '';
+$nameError = $passwordError = $confirmPasswordError = '';
 $successMsg = $_GET['success_message'] ?? '';
 
 // Get tourist email from session
@@ -28,22 +28,55 @@ $tourist = $query->fetch();
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Validate and encode the password
     $name = validate($_POST['name']);
-
-
+    $password = validate($_POST['password']);
+    $oldPassword = validate($_POST['oldPassword']);
+    $confirmPassword = validate($_POST['confirmPassword']);
+    // Check if name is empty
     // Check if name is empty
     if (empty($name)) {
         $nameError = 'برجاء أدخال اسم المستخدم';
-    } else {
-        // Update password and name in the database
-        $stmt = $con->prepare("UPDATE tourist SET name=?  WHERE email=?");
-        $stmt->execute([$name, $touristEmail]);
+    } elseif (strlen($name) < 3) {
+        $nameError = 'الاسم لا يمكن ان يقل عن 3 حروف';
+    }
+
+    // Check if password is being updated
+    if (!empty($password)) {
+        // Check if old password matches
+        if ($password === $oldPassword) {
+            $passwordError = 'كلمة المرور المدخلة موجوده مسبقا';
+        } elseif (empty($oldPassword)) {
+            $passwordError = 'الرجاء إدخال كلمة المرور القديمة';
+        } elseif (strlen($password) < 8) {
+            $passwordError = 'كلمة المرور يجب أن تكون أكثر من 8 حروف';
+        } elseif (!preg_match('/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[\W_]).*$/', $password)) {
+            $passwordError = 'يجب أن تحتوي كلمة المرور على حرف واحد على الأقل، رقم واحد على الأقل، ورمز واحد على الأقل';
+        } elseif (empty($confirmPassword)) {
+            $confirmPasswordError = 'الرجاء تأكيد كلمة المرور';
+        } elseif ($password !== $confirmPassword) {
+            $confirmPasswordError = 'كلمة السر غير مطابقة';
+        }
+    }
+
+    // If there are no errors, update the database
+    if (empty($nameError) && empty($passwordError) && empty($confirmPasswordError)) {
+        if (!empty($password)) {
+            // Update both name and password
+            $stmt = $con->prepare("UPDATE tourist SET name=?, password=? WHERE email=?");
+            $stmt->execute([$name, $password, $touristEmail]);
+        } else {
+            // Update only name
+            $stmt = $con->prepare("UPDATE tourist SET name=? WHERE email=?");
+            $stmt->execute([$name, $touristEmail]);
+        }
 
         // Set success message and redirect
         $successMsg = 'تم تعديل بيانات الملف الشخصي بنجاح';
         header("Location: edit_profile.php?success_message=".urlencode($successMsg));
         exit;
     }
+
 }
+
 
 ?>
 
@@ -100,19 +133,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <!--Start Navbar Section-->
 <nav class="site-nav">
     <div class="container">
-        <div class="site-navigation">
-            <a class="logo m-0 float-right" href="../index.php">توصية بالجولات <span class="text-primary"></span></a>
+        <div class="site-navigation d-flex justify-content-between align-items-center">
+            <a class="m-0 float-right" href="../index.php">
+                <img src="../assets/images/logo.PNG" alt="" style="height: 120px; width: 100px; font-weight: bold; color: white;">
+                <span class="text-primary"></span>
+            </a>
 
-            <ul class="js-clone-nav d-none d-lg-inline-block text-right site-menu float-left">
+            <ul class="js-clone-nav d-none d-lg-inline-block text-right site-menu float-left align-items-center" style="font-weight: bold; font-size: 24px;">
                 <li class=""><a href="dashboard.php">الصفحة الرئيسية</a></li>
-                <li class=""><a href="edit_password.php">تعديل بيانات كلمة المرور</a></li>
                 <li class=""><a href="test.php">الاختبار</a></li>
                 <li><a href="../logout.php">تسجيل الخروج</a></li>
             </ul>
 
-            <a class="burger ml-auto float-left site-menu-toggle js-menu-toggle d-inline-block d-lg-none light"
-               data-target="#main-navbar"
-               data-toggle="collapse" href="../index.php">
+            <a class="burger ml-auto float-right site-menu-toggle js-menu-toggle d-inline-block d-lg-none light" data-target="#main-navbar" data-toggle="collapse" href="../index.php">
                 <span></span>
             </a>
 
@@ -122,7 +155,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <!--End navbar Section-->
 
 <!--Start Hero Section-->
-<div class="hero hero-inner">
+<div class="hero hero-inner" style="background: url('../assets/images/m-k-R1gC_gJaJ14-unsplash.jpg'); background-size: cover; position: relative;">
     <div class="container">
         <div class="row align-items-center">
             <div class="col-lg-6 mx-auto text-center">
@@ -138,39 +171,64 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 
 <!--Start Our ٍSupervisor Section-->
+<div class="px-5 py-5" style="min-height: 80vh;">
+    <?php
+    if ($successMsg): ?>
+        <div id="successMessage" class="d-flex justify-content-center py-3">
+            <div class="alert alert-success w-25 text-center" role="alert">
+                <?php
+                echo $successMsg ?>
+            </div>
+        </div>
+    <?php
+    endif; ?>
 
-<?php
-if ($successMsg): ?>
-    <div id="successMessage" class="d-flex justify-content-center py-3">
-        <div class="alert alert-success w-25 text-center" role="alert">
-            <?php
-            echo $successMsg ?>
+    <div class="row justify-content-center">
+        <div class="col-md-5">
+            <div  class="bg-white rounded shadow p-5 text-center">
+        <form method="post" style="font-size:
+                 15px"
+              action="<?php
+              echo htmlspecialchars($_SERVER['REQUEST_URI']) ?>">
+
+            <div class="mb-3">
+                <label for="name" class="form-label">الاسم</label>
+                <input type="text" class="form-control" id="name" name="name" value="<?php
+                echo $tourist['name'] ?>"/>
+                <span class="error"> <?php
+                    echo $nameError ?></span>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label" for="oldPassword">كلمة المرور</label>
+                <input type="text" class="form-control" readonly id="oldPassword" name="oldPassword" value="<?php
+                echo $tourist['password']; ?>">
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label" for="password">كلمة المرور الجديدة</label>
+                <input type="password" class="form-control" id="password" name="password">
+                <span class="error"><?php echo $passwordError ?></span>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label" for="confirmPassword">تأكيد كلمة المرور</label>
+                <input type="password" class="form-control" id="confirmPassword" name="confirmPassword">
+                <span class="error"><?php echo $confirmPasswordError ?></span>
+
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-block mt-2" name="editProfile">تعديل البيانات
+                الشخصية</button>
+
+        </form>
+            </div>
         </div>
     </div>
-<?php
-endif; ?>
-<div class="justify-content-center d-flex text-center center-div bg-white p-5 rounded shadow" style="margin-top: 134px">
-    <form method="post"
-          action="<?php
-          echo htmlspecialchars($_SERVER['REQUEST_URI']) ?>">
-
-        <div class="mb-3">
-            <label for="name" class="form-label">الاسم</label>
-            <input type="text" class="form-control" id="name" name="name" value="<?php
-            echo $tourist['name'] ?>"/>
-            <span class="error"> <?php
-                echo $nameError ?></span>
-        </div>
-
-
-        <button type="submit" class="btn py-2 px-4 btn-primary" name="editProfile">
-            تعديل البيانات الشخصية
-        </button>
-
-    </form>
 </div>
+
 <!--Start Footer Section-->
-<div class="site-footer fixed-bottom">
+<div class="site-footer ">
     <div class="inner first">
         <div class="inner dark">
             <div class="container">

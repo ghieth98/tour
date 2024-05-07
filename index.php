@@ -97,31 +97,31 @@ $successMsg = $_GET['success_message'] ?? '';
 <nav class="site-nav">
     <div class="container">
         <div class="site-navigation">
-            <a class="logo m-0 float-right" href="index.php">توصية بالجولات <span class="text-primary"></span></a>
+            <a class="logo m-0 float-right" >
+                <img src="assets/images/logo.PNG" alt="" style="height: 160px; padding-bottom: 50px">
+                <span class="text-primary">
+                </span>
+            </a>
 
-            <ul class="js-clone-nav d-none d-lg-inline-block text-right site-menu float-left">
-                <li class="active"><a href="index.php">الرئيسية</a></li>
-                <li class="active"><a href="show_cities.php">المدن</a></li>
-                <li><a href="destination.php">الوجهات</a></li>
+            <ul class="js-clone-nav d-none d-lg-inline-block text-right site-menu float-left" style="margin-left:
+            40px; font-size: 40px">
+
+
 
                 <?php if (isset($tourist_id)): ?>
-                    <li><a href="logout.php">تسجيل الخروج</a></li>
                     <li><a class="fa-solid fa-user" href="tourist/dashboard.php"></a></li>
+                    <li><a href="logout.php">تسجيل الخروج</a></li>
 
                 <?php elseif(isset($supervisor_id)):  ?>
 
-                    <li><a href="logout.php">تسجيل الخروج</a></li>
                     <li><a class="fa-solid fa-user" href="supervisor/dashboard.php"></a></li>
+                    <li><a href="logout.php">تسجيل الخروج</a></li>
 
                 <?php elseif(isset($administrator_id)):  ?>
 
-                    <li><a href="logout.php">تسجيل الخروج</a></li>
                     <li><a class="fa-solid fa-user" href="administrator/dashboard.php"></a></li>
+                    <li><a href="logout.php">تسجيل الخروج</a></li>
 
-                <?php else:  ?>
-
-                    <li><a href="signup.php">تسجيل جديد</a></li>
-                    <li><a href="login.php">تسجيل الدخول</a></li>
 
                 <?php endif;  ?>
 
@@ -151,10 +151,12 @@ $successMsg = $_GET['success_message'] ?? '';
                         <div class="col-12">
                             <form class="form">
                                 <div class="row mb-2">
-                                    <div class="col-sm-12 col-md-6 mb-3 mb-lg-0 col-lg-12">
-                                        <input class="form-control" id="search" name="search"
-                                               placeholder="ادخل كلمة بحثك هنا..."
-                                               type="text">
+                                    <div class="col-sm-12 col-md-6  mb-lg-0 col-lg-12">
+                                        <div class="d-flex justify-content-center align-content-center" >
+                                            <a class="btn btn-primary btn-lg ml-4" style="font-size: 16px"
+                                               href="signup.php">تسجيل جديد</a>
+                                            <a class="btn btn-primary btn-lg" style="font-size: 16px" href="login.php">تسجيل الدخول</a>
+                                        </div>
                                     </div>
                                     <div class="mx-auto col-lg-10  mt-1 justify-content-center shadow rounded"
                                          id="showSearch">

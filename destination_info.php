@@ -111,13 +111,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <!--Start Navbar Section-->
 <nav class="site-nav">
     <div class="container">
-        <div class="site-navigation">
-            <a class="logo m-0 float-right" href="index.php">توصية بالجولات <span class="text-primary"></span></a>
+        <div class="site-navigation d-flex justify-content-between align-items-center">
+            <a class="m-0 float-right" href="../index.php">
+                <img src="assets/images/logo.PNG" alt="" style="height: 120px; width: 100px; font-weight: bold; color: white;">
+                <span class="text-primary"></span>
+            </a>
 
-            <ul class="js-clone-nav d-none d-lg-inline-block text-right site-menu float-left">
-                <li class="active"><a href="index.php">الرئيسية</a></li>
-                <li class="active"><a href="show_cities.php">المدن</a></li>
-                <li><a href="destination.php">الوجهات</a></li>
+            <ul class="js-clone-nav d-none d-lg-inline-block text-right site-menu float-left align-items-center" style="font-weight: bold; font-size: 24px;">
+                <li class="active"><a href="tourist/dashboard.php">الرئيسية</a></li>
+<!--                <li class="active"><a href="show_cities.php">المدن</a></li>-->
+<!--                <li><a href="destination.php">الوجهات</a></li>-->
 
                 <?php if (isset($tourist_id)): ?>
                     <li><a href="logout.php">تسجيل الخروج</a></li>
@@ -128,9 +131,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 <?php elseif(isset($administrator_id)):  ?>
                     <li><a href="logout.php">تسجيل الخروج</a></li>
                     <li><a class="fa-solid fa-user" href="administrator/dashboard.php"></a></li>
-                <?php else:  ?>
-                    <li><a href="signup.php">تسجيل جديد</a></li>
-                    <li><a href="login.php">تسجيل الدخول</a></li>
                 <?php endif;  ?>
 
             </ul>

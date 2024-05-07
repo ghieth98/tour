@@ -95,19 +95,23 @@ $favorites = $query->fetchAll();
 <!--Start Navbar Section-->
 <nav class="site-nav">
     <div class="container">
-        <div class="site-navigation">
-            <a class="logo m-0 float-right" href="../index.php">توصية بالجولات <span class="text-primary"></span></a>
+        <div class="site-navigation d-flex justify-content-between align-items-center">
+            <a class="m-0 float-right" href="../index.php">
+                <img src="../assets/images/logo.PNG" alt=""
+                     style="height: 120px; width: 100px; font-weight: bold; color: white;">
+                <span class="text-primary"></span>
+            </a>
 
-            <ul class="js-clone-nav d-none d-lg-inline-block text-right site-menu float-left">
+            <ul class="js-clone-nav d-none d-lg-inline-block text-right site-menu float-left align-items-center" style="font-weight:
+            bold; font-size: 24px;">
                 <li class=""><a href="dashboard.php">الصفحة الرئيسية</a></li>
                 <li class=""><a href="edit_profile.php">تعديل بيانات الملف الشخصي</a></li>
                 <li class=""><a href="test.php">الاختبار</a></li>
                 <li><a href="../logout.php">تسجيل الخروج</a></li>
             </ul>
 
-            <a class="burger ml-auto float-left site-menu-toggle js-menu-toggle d-inline-block d-lg-none light"
-               data-target="#main-navbar"
-               data-toggle="collapse" href="../index.php">
+            <a class="burger ml-auto float-right site-menu-toggle js-menu-toggle d-inline-block d-lg-none light"
+               data-target="#main-navbar" data-toggle="collapse" href="../index.php">
                 <span></span>
             </a>
 
@@ -117,7 +121,10 @@ $favorites = $query->fetchAll();
 <!--End navbar Section-->
 
 <!--Start Hero Section-->
-<div class="hero hero-inner">
+<div class="hero hero-inner"
+     style="background: url('../assets/images/m-k-R1gC_gJaJ14-unsplash.jpg')  ;
+ background-size: cover;
+ position:relative;">
     <div class="container">
         <div class="row align-items-center">
             <div class="col-lg-6 mx-auto text-center">
@@ -168,10 +175,11 @@ $favorites = $query->fetchAll();
                         </a>
                         <p class="card-text"><?php
                             echo substr($favorite['description'], 0, 300) ?>...</p>
-                        <p class="text-muted"> أوقات العمل :  من: <?php
+                        <p class="text-muted"> أوقات العمل : من: <?php
                             echo date("H:i A", strtotime($favorite['start_date']));
                             ?> إلى:
-                            <?php  echo date("H:i A", strtotime($favorite['end_date'])); ?> </p>
+                            <?php
+                            echo date("H:i A", strtotime($favorite['end_date'])); ?> </p>
                         <p class="text-muted"> اسم المدينة : <?php
                             echo $favorite['city_name'] ?> </p>
                         <p class="text-muted">رقم الهاتف: <?php

@@ -12,7 +12,7 @@ $comment_id = isset($_GET['review_id']) && is_numeric($_GET['review_id']) ? intv
 
 // Check if form is submitted via POST method
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-
+    $destination_id = $_POST['destination_id'];
     // If inputs are valid, prepare and execute SQL query to delete review data
     $stmt = $con->prepare("DELETE FROM review WHERE review_id=?");
     $stmt->execute([$comment_id]);
@@ -21,7 +21,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $successMsg = 'تم ازالة التعليق بنجاح';
 
     // Redirect to show_review.php page with success message
-    header("Location:show_comments.php?success_message=" . urlencode($successMsg));
+    header("Location:show_comments.php?destination_id=" . $destination_id . "&success_message=" .
+        urlencode($successMsg));
     exit; // Exit to prevent further execution after redirection
 
 }

@@ -94,10 +94,15 @@ $successMsg = $_GET['success_message'] ?? '';
 <!--Start Navbar Section-->
 <nav class="site-nav">
     <div class="container">
-        <div class="site-navigation">
-            <a class="logo m-0 float-right" href="../index.php">توصية بالجولات <span class="text-primary"></span></a>
+        <div class="site-navigation d-flex justify-content-between align-items-center">
+            <a class="m-0 float-right" href="../index.php">
+                <img src="../assets/images/logo.PNG" alt=""
+                     style="height: 120px; width: 100px; font-weight: bold; color: white;">
+                <span class="text-primary"></span>
+            </a>
 
-            <ul class="js-clone-nav d-none d-lg-inline-block text-right site-menu float-left">
+            <ul class="js-clone-nav d-none d-lg-inline-block text-right site-menu float-left align-items-center" style="font-weight:
+            bold; font-size: 24px;">
                 <li class=""><a href="dashboard.php">الصفحة الرئيسية</a></li>
                 <li class=""><a href="edit_profile.php">تعديل بيانات الملف الشخصي</a></li>
                 <li class=""><a href="show_destinations.php">عرض الوجهات</a></li>
@@ -106,9 +111,8 @@ $successMsg = $_GET['success_message'] ?? '';
                 <li><a href="../logout.php">تسجيل الخروج</a></li>
             </ul>
 
-            <a class="burger ml-auto float-left site-menu-toggle js-menu-toggle d-inline-block d-lg-none light"
-               data-target="#main-navbar"
-               data-toggle="collapse" href="../index.php">
+            <a class="burger ml-auto float-right site-menu-toggle js-menu-toggle d-inline-block d-lg-none light"
+               data-target="#main-navbar" data-toggle="collapse" href="../index.php">
                 <span></span>
             </a>
 
@@ -118,7 +122,9 @@ $successMsg = $_GET['success_message'] ?? '';
 <!--End navbar Section-->
 
 <!--Start Hero Section-->
-<div class="hero hero-inner">
+<div class="hero hero-inner" style="background: url('../assets/images/edge.jpg') ;
+ background-size: cover;
+ position:relative;">
     <div class="container">
         <div class="row align-items-center">
             <div class="col-lg-6 mx-auto text-center">
@@ -143,7 +149,7 @@ $successMsg = $_GET['success_message'] ?? '';
     <?php endif;  ?>
 
 
-    <table class="table align-middle mb-0 ">
+    <table class="table align-middle mb-0 " style="font-size: 17px;">
         <thead class="text-center">
         <tr>
             <th scope="col">اسم السائح</th>
@@ -169,6 +175,7 @@ $successMsg = $_GET['success_message'] ?? '';
                               method="post"  onsubmit="return confirm('هل تريد حذف ' +
                                'هذا التعليق ؟');"
                               style="display: inline;">
+                            <input type="hidden" name="destination_id" value="<?php echo $comment['destination_id'] ?>">
                             <button class="btn btn-primary px-4 py-2" type="submit">
                                 حذف
                             </button>

@@ -54,7 +54,7 @@ $successMsg = $_GET['success_message'] ?? '';
 
 <body>
 
-<!--Start mobile toggle section-->
+<!-- Start mobile toggle section -->
 <div class="site-mobile-menu site-navbar-target">
     <div class="site-mobile-menu-header">
         <div class="site-mobile-menu-close">
@@ -63,73 +63,70 @@ $successMsg = $_GET['success_message'] ?? '';
     </div>
     <div class="site-mobile-menu-body"></div>
 </div>
-<!--End mobile toggle section-->
+<!-- End mobile toggle section -->
 
-<!--Start Navbar Section-->
+<!-- Start Navbar Section -->
 <nav class="site-nav">
     <div class="container">
-        <div class="site-navigation">
-            <a class="logo m-0 float-right" href="../index.php">توصية بالجولات <span class="text-primary"></span></a>
+        <div class="site-navigation d-flex justify-content-between align-items-center">
+            <a class="m-0 float-right" href="../index.php">
+                <img src="../assets/images/logo.PNG" alt="" style="height: 120px; width: 100px; font-weight: bold; color: white;">
+                <span class="text-primary"></span>
+            </a>
 
-            <ul class="js-clone-nav d-none d-lg-inline-block text-right site-menu float-left">
-                <li class=""><a href="dashboard.php">الصفحة الرئيسية</a></li>
-                <li class=""><a href="edit_profile.php">تعديل بيانات الملف الشخصي</a></li>
-                <li class=""><a href="add_api_url.php">أضافة رابط الربط</a></li>
+            <ul class="js-clone-nav d-none d-lg-inline-block text-right site-menu float-left align-items-center" style="font-weight: bold; font-size: 24px;">
+                <li><a href="dashboard.php">الصفحة الرئيسية</a></li>
+                <li><a href="edit_profile.php">تعديل بيانات الملف الشخصي</a></li>
+                <!-- <li><a href="add_api_url.php">أضافة رابط الربط</a></li> -->
                 <li><a href="../logout.php">تسجيل الخروج</a></li>
             </ul>
 
-            <a class="burger ml-auto float-left site-menu-toggle js-menu-toggle d-inline-block d-lg-none light"
-               data-target="#main-navbar"
-               data-toggle="collapse" href="../index.php">
+            <a class="burger ml-auto float-right site-menu-toggle js-menu-toggle d-inline-block d-lg-none light" data-target="#main-navbar" data-toggle="collapse" href="../index.php">
                 <span></span>
             </a>
-
         </div>
     </div>
 </nav>
-<!--End navbar Section-->
+<!-- End navbar Section -->
 
-<!--Start Hero Section-->
-<div class="hero hero-inner">
+<!-- Start Hero Section -->
+<div class="hero hero-inner" style="background: url('../assets/images/hala-alghanim-f5ZB0LHwi0s-unsplash.jpg'); background-size: cover; position: relative;">
     <div class="container">
         <div class="row align-items-center">
             <div class="col-lg-6 mx-auto text-center">
                 <div class="intro-wrap">
                     <h1 class="mb-0">لوحة تحكم المدير</h1>
-
                 </div>
             </div>
         </div>
     </div>
 </div>
-<!--End Hero Section-->
+<!-- End Hero Section -->
 
-<!--Start Our ٍSupervisor Section-->
-<div class="px-5 py-5 " style="height: 100vh">
+<!-- Start Our Supervisor Section -->
+<div class="px-5 py-5" style="height: 100vh;">
 
-    <?php if ($successMsg):  ?>
+    <?php if ($successMsg): ?>
         <div id="successMessage" class="d-flex justify-content-center py-3">
-            <div class="alert alert-success w-25 text-center"  role="alert">
+            <div class="alert alert-success w-25 text-center" role="alert">
                 <?php echo $successMsg ?>
             </div>
         </div>
-    <?php endif;  ?>
+    <?php endif; ?>
 
     <div class="d-flex align-items-center py-3">
-
-    <div>
-        <a class="px-4 btn py-2 btn-primary " href="add_supervisor.php">
-            إضافة مسؤول جديد
-        </a>
-    </div>
-        <div class="px-2 m-5 ">
+        <div>
+            <a class="px-4 btn py-2 btn-primary" href="add_supervisor.php">
+                إضافة مسؤول جديد
+            </a>
+        </div>
+        <div class="px-2 m-5">
             <label for="search">ابحث</label>
             <input type="text" id="search" placeholder="ابحث هنا...">
         </div>
     </div>
 
-
-    <table class="table align-middle mb-0">
+    <table class="table align-middle mb-0" style="font-size: 17px;">
         <thead class="text-center">
         <tr>
             <th scope="col">الاسم</th>
@@ -138,70 +135,44 @@ $successMsg = $_GET['success_message'] ?? '';
         </tr>
         </thead>
         <tbody class="text-center" id="showSearch">
-        <?php
-        foreach ($supervisors as $supervisor): ?>
+        <?php foreach ($supervisors as $supervisor): ?>
             <tr>
-                <td>
-                    <?php
-                    echo $supervisor['name'] ?>
-                </td>
-                <td>
-                    <?php
-                    echo $supervisor['email'] ?>
-                </td>
+                <td><?php echo $supervisor['name'] ?></td>
+                <td><?php echo $supervisor['email'] ?></td>
                 <td>
                     <div style="display: inline;">
 
-                        <form action="ban_supervisor.php?supervisor_id=<?php
-                        echo $supervisor['supervisor_id'] ?>"
-                              method="post" onsubmit=" <?php
-                        if ($supervisor['ban'] === 'unbanned')  : ?>
-                            return confirm('هل تريد حظر هذا المشرف ؟');
-                        <?php
-                        elseif ($supervisor['ban'] === 'banned' || $supervisor['ban'] === 'temporary'): ?>
-                            return confirm('هل تريد رفع الحظر عن هذا المشرف؟')
-                        <?php
-                        endif; ?>"
-                              style="display: inline;">
-
-                            <?php
-                            if ($supervisor['ban'] === 'unbanned') : ?>
-                                <button type="submit" name="ban" value="banned" class="px-4 btn py-1 btn-primary ">
+                        <form action="ban_supervisor.php?supervisor_id=<?php echo $supervisor['supervisor_id'] ?>" method="post" onsubmit="<?php if ($supervisor['ban'] === 'unbanned'): ?> return confirm('هل تريد حظر هذا المشرف؟'); <?php elseif ($supervisor['ban'] === 'banned' || $supervisor['ban'] === 'temporary'): ?> return confirm('هل تريد رفع الحظر عن هذا المشرف؟'); <?php endif; ?>" style="display: inline;">
+                            <?php if ($supervisor['ban'] === 'unbanned'): ?>
+                                <button type="submit" name="ban" value="banned" class="px-4 btn py-1 btn-primary">
                                     حظر
                                 </button>
-                                <button type="submit" name="ban" value="temporary" class="px-4 btn py-1
-                                btn-primary ">
+                                <button type="submit" name="ban" value="temporary" class="px-4 btn py-1 btn-primary">
                                     حظر مؤقت
                                 </button>
-                            <?php
-                            elseif ($supervisor['ban'] === 'banned' || $supervisor['ban'] === 'temporary'): ?>
-                                <button name="ban" value="unbanned" class="px-4 btn py-1 btn-primary " type="submit">
+                            <?php elseif ($supervisor['ban'] === 'banned' || $supervisor['ban'] === 'temporary'): ?>
+                                <button name="ban" value="unbanned" class="px-4 btn py-1 btn-primary" type="submit">
                                     رفع الحظر
                                 </button>
-                            <?php
-                            endif; ?>
+                            <?php endif; ?>
                         </form>
-
 
                     </div>
                 </td>
             </tr>
-        <?php
-        endforeach; ?>
+        <?php endforeach; ?>
         </tbody>
     </table>
 </div>
+<!-- End Our Supervisor Section -->
 
-<!--End Our Supervisor Section-->
-
-
-<!--Start Footer Section-->
-<div class="site-footer ">
+<!-- Start Footer Section -->
+<div class="site-footer">
     <div class="inner first">
         <div class="inner dark">
             <div class="container">
                 <div class="row text-center">
-                    <div class="col-md-8  mb-md-0 mx-auto">
+                    <div class="col-md-8 mb-md-0 mx-auto">
                         <p>
                             جميع الحقوق محفوظة للتوصية بالجولات @ 2024
                         </p>
@@ -211,8 +182,7 @@ $successMsg = $_GET['success_message'] ?? '';
         </div>
     </div>
 </div>
-<!--End Footer Section-->
-
+<!-- End Footer Section -->
 
 <div id="overlayer"></div>
 <div class="loader">

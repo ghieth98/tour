@@ -115,29 +115,35 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <nav class="site-nav">
     <div class="container">
         <div class="site-navigation">
-            <a class="logo m-0 float-right" href="index.php">توصية بالجولات <span class="text-primary"></span></a>
+            <a class="logo m-0 float-right" >
+                <img src="assets/images/logo.PNG" alt="" style="height: 160px; padding-bottom: 50px">
+                <span class="text-primary">
+                </span>
+            </a>
 
-            <ul class="js-clone-nav d-none d-lg-inline-block text-right site-menu float-left">
+            <ul class="js-clone-nav d-none d-lg-inline-block text-right site-menu float-left" style="margin-left:
+            40px; margin-top: 10px; font-size: 40px">
+
                 <li class="active"><a href="index.php">الرئيسية</a></li>
-                <li><a href="destination.php">الوجهات</a></li>
-                <?php
-                if (isset($tourist_id)): ?>
-                    <li><a href="logout.php">تسجيل الخروج</a></li>
+                <li class="active"><a href="signup.php">تسجيل جديد</a></li>
+
+                <?php if (isset($tourist_id)): ?>
                     <li><a class="fa-solid fa-user" href="tourist/dashboard.php"></a></li>
-                <?php
-                elseif (isset($supervisor_id)): ?>
                     <li><a href="logout.php">تسجيل الخروج</a></li>
+
+                <?php elseif(isset($supervisor_id)):  ?>
+
                     <li><a class="fa-solid fa-user" href="supervisor/dashboard.php"></a></li>
-                <?php
-                elseif (isset($administrator_id)): ?>
                     <li><a href="logout.php">تسجيل الخروج</a></li>
+
+                <?php elseif(isset($administrator_id)):  ?>
+
                     <li><a class="fa-solid fa-user" href="administrator/dashboard.php"></a></li>
-                <?php
-                else: ?>
-                    <li><a href="signup.php">تسجيل جديد</a></li>
-                    <li><a href="login.php">تسجيل الدخول</a></li>
-                <?php
-                endif; ?>
+                    <li><a href="logout.php">تسجيل الخروج</a></li>
+
+
+                <?php endif;  ?>
+
             </ul>
 
             <a class="burger ml-auto float-left site-menu-toggle js-menu-toggle d-inline-block d-lg-none light"

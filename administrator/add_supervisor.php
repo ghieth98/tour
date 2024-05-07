@@ -133,105 +133,105 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 </div>
 <!--End mobile toggle section-->
 
-<!--Start Navbar Section-->
+<!-- Start mobile toggle section -->
+<div class="site-mobile-menu site-navbar-target">
+    <div class="site-mobile-menu-header">
+        <div class="site-mobile-menu-close">
+            <span class="icofont-close js-menu-toggle"></span>
+        </div>
+    </div>
+    <div class="site-mobile-menu-body"></div>
+</div>
+<!-- End mobile toggle section -->
+
+<!-- Start Navbar Section -->
 <nav class="site-nav">
     <div class="container">
-        <div class="site-navigation">
-            <a class="logo m-0 float-right" href="../index.php">توصية بالجولات <span class="text-primary"></span></a>
+        <div class="site-navigation d-flex justify-content-between align-items-center">
+            <a class="m-0 float-right" href="../index.php">
+                <img src="../assets/images/logo.PNG" alt="" style="height: 120px; width: 100px; font-weight: bold; color: white;">
+                <span class="text-primary"></span>
+            </a>
 
-            <ul class="js-clone-nav d-none d-lg-inline-block text-right site-menu float-left">
-                <li class=""><a href="dashboard.php">الصفحة الرئيسية</a></li>
-                <li class=""><a href="edit_profile.php">تعديل بيانات الملف الشخصي</a></li>
-                <li class=""><a href="add_api_url.php">أضافة رابط الربط</a></li>
+            <ul class="js-clone-nav d-none d-lg-inline-block text-right site-menu float-left align-items-center" style="font-weight: bold; font-size: 24px;">
+                <li><a href="dashboard.php">الصفحة الرئيسية</a></li>
+                <li><a href="edit_profile.php">تعديل بيانات الملف الشخصي</a></li>
+                <!-- <li><a href="add_api_url.php">أضافة رابط الربط</a></li> -->
                 <li><a href="../logout.php">تسجيل الخروج</a></li>
             </ul>
 
-            <a class="burger ml-auto float-left site-menu-toggle js-menu-toggle d-inline-block d-lg-none light"
-               data-target="#main-navbar"
-               data-toggle="collapse" href="../index.php">
+            <a class="burger ml-auto float-right site-menu-toggle js-menu-toggle d-inline-block d-lg-none light" data-target="#main-navbar" data-toggle="collapse" href="../index.php">
                 <span></span>
             </a>
-
         </div>
     </div>
 </nav>
-<!--End navbar Section-->
+<!-- End Navbar Section -->
 
-<!--Start Hero Section-->
-<div class="hero hero-inner">
+<!-- Start Hero Section -->
+<div class="hero hero-inner" style="background: url('../assets/images/hala-alghanim-f5ZB0LHwi0s-unsplash.jpg'); background-size: cover; position: relative;">
     <div class="container">
         <div class="row align-items-center">
             <div class="col-lg-6 mx-auto text-center">
                 <div class="intro-wrap">
-                    <h1 class="mb-0">اضافة مسؤول جديد</h1>
-
+                    <h1 class="mb-0">أضافة مشرف جديد</h1>
                 </div>
             </div>
         </div>
     </div>
 </div>
-<!--End Hero Section-->
+<!-- End Hero Section -->
 
-<!--Start Our ٍSupervisor Section-->
-
-<?php
-if ($successMsg): ?>
-    <div id="successMessage" class="d-flex justify-content-center py-3">
-        <div class="alert alert-success w-25 text-center" role="alert">
-            <?php
-            echo $successMsg ?>
+<!-- Start Our Supervisor Section -->
+<div class="px-5 py-5 d-flex justify-content-center align-items-center" style="min-height: 80vh;">
+    <?php if ($successMsg): ?>
+        <div id="successMessage" class="d-flex justify-content-center py-3">
+            <div class="alert alert-success w-50 text-center" role="alert">
+                <?php echo $successMsg; ?>
+            </div>
         </div>
+    <?php endif; ?>
+
+    <div class="col-md-5 bg-white rounded shadow p-5 text-center">
+        <form method="post" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" style="font-size: 17px">
+
+            <div class="mb-3">
+                <label class="form-label" for="name">اسم المشرف</label>
+                <input type="text" class="form-control" id="name" name="name" value="<?php echo $name; ?>">
+                <span class="error"><?php echo $nameError; ?></span>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label" for="email">البريد الإلكتروني</label>
+                <input type="email" class="form-control" id="email" name="email" value="<?php echo $email; ?>">
+                <span class="error"><?php echo $emailError; ?></span>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-block mt-2" style="font-size: 14px; font-weight: bold"
+                    name="addSupervisor">
+                إضافة
+            </button>
+
+        </form>
     </div>
-<?php
-endif; ?>
-<div class="justify-content-center d-flex text-center center-div bg-white p-5 rounded shadow" style="margin-top: 120px">
-    <form method="post" action="<?php
-    echo htmlspecialchars($_SERVER['PHP_SELF']) ?>">
-
-        <div class="mb-3">
-            <label class="form-label" for="name">اسم المشرف</label>
-            <input type="text" class="form-control" id="name" name="name" value="<?php
-            echo $name ?>"/>
-            <span class="error"> <?php
-                echo $nameError ?></span>
-        </div>
-
-        <div class="mb-3">
-            <label class="form-label" for="email">البريد الإلكتروني</label>
-            <input type="email" class="form-control" id="email" name="email" value="<?php
-            echo $email ?>"/>
-            <span class="error"> <?php
-                echo $emailError ?></span>
-        </div>
-
-
-        <button type="submit" class="btn py-2 px-4 btn-primary" name="addSupervisor">
-            إضافة
-        </button>
-
-    </form>
 </div>
-<!--End Our Supervisor Section-->
+<!-- End Our Supervisor Section -->
 
-
-<!--Start Footer Section-->
-<div class="site-footer fixed-bottom">
+<!-- Start Footer Section -->
+<div class="site-footer ">
     <div class="inner first">
         <div class="inner dark">
             <div class="container">
                 <div class="row text-center">
-                    <div class="col-md-8  mb-md-0 mx-auto">
-                        <p>
-                            جميع الحقوق محفوظة للتوصية بالجولات @ 2024
-                        </p>
+                    <div class="col-md-8 mb-md-0 mx-auto">
+                        <p>جميع الحقوق محفوظة للتوصية بالجولات @ 2024</p>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
-<!--End Footer Section-->
-
+<!-- End Footer Section -->
 
 <div id="overlayer"></div>
 <div class="loader">
@@ -239,6 +239,8 @@ endif; ?>
         <span class="sr-only">Loading...</span>
     </div>
 </div>
+
+
 
 <script src="../assets/js/jquery-3.4.1.min.js"></script>
 <script src="../assets/js/popper.min.js"></script>

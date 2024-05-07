@@ -32,7 +32,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         exit; // Exit to prevent further execution after redirection
 
     } elseif ($status === 'temporary') {
-        $ban_expiration_date = date('Y-m-d-H-i-s', strtotime('+5 hours'));
+        $ban_expiration_date = date('Y-m-d H:i:s', strtotime('+1 month'));
         $stmt = $con->prepare("UPDATE supervisor SET ban=?, ban_expiration_date=? WHERE supervisor_id=?");
         $stmt->execute([$status, $ban_expiration_date, $supervisor_id]);
         $successMsg = 'تم حظر  المشرف مؤقتا بنجاح';

@@ -131,10 +131,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <!--Start Navbar Section-->
 <nav class="site-nav">
     <div class="container">
-        <div class="site-navigation">
-            <a class="logo m-0 float-right" href="../index.php">توصية بالجولات <span class="text-primary"></span></a>
+        <div class="site-navigation d-flex justify-content-between align-items-center">
+            <a class="m-0 float-right" href="../index.php">
+                <img src="../assets/images/logo.PNG" alt=""
+                     style="height: 120px; width: 100px; font-weight: bold; color: white;">
+                <span class="text-primary"></span>
+            </a>
 
-            <ul class="js-clone-nav d-none d-lg-inline-block text-right site-menu float-left">
+            <ul class="js-clone-nav d-none d-lg-inline-block text-right site-menu float-left align-items-center"
+                style="font-weight: bold; font-size: 24px;">
                 <li class=""><a href="dashboard.php">الصفحة الرئيسية</a></li>
                 <li class=""><a href="edit_profile.php">تعديل بيانات الملف الشخصي</a></li>
                 <li class=""><a href="show_destinations.php">عرض الوجهات</a></li>
@@ -155,7 +160,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <!--End navbar Section-->
 
 <!--Start Hero Section-->
-<div class="hero hero-inner">
+<div class="hero hero-inner" style="background: url('../assets/images/edge.jpg'); background-size: cover; position:
+relative;">
     <div class="container">
         <div class="row align-items-center">
             <div class="col-lg-6 mx-auto text-center">
@@ -170,22 +176,21 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <!--End Hero Section-->
 
 <!--Start add city Section-->
-
-<?php
-if ($successMsg): ?>
-    <div id="successMessage" class="d-flex justify-content-center py-3">
-        <div class="alert alert-success w-25 text-center" role="alert">
-            <?php
-            echo $successMsg ?>
+<div class="px-5 py-5 d-flex justify-content-center align-items-center" style="min-height: 80vh;">
+    <?php
+    if ($successMsg): ?>
+        <div id="successMessage" class="d-flex justify-content-center py-3">
+            <div class="alert alert-success w-25 text-center" role="alert">
+                <?php
+                echo $successMsg ?>
+            </div>
         </div>
-    </div>
-<?php
-endif; ?>
-<div style="height: 70vh">
-    <div class="justify-content-center d-flex text-center center-div bg-white p-5 rounded shadow" style="margin-top:
-190px; ">
+    <?php
+    endif; ?>
+    <div class="col-md-5 bg-white rounded shadow p-5 text-center">
+
         <form method="post" action="<?php
-        echo htmlspecialchars($_SERVER['PHP_SELF']) ?>" enctype="multipart/form-data">
+        echo htmlspecialchars($_SERVER['PHP_SELF']) ?>" enctype="multipart/form-data" style="font-size: 17px">
 
             <div class="mb-3">
                 <label class="form-label" for="name">اسم المدينة</label>
@@ -250,7 +255,8 @@ endif; ?>
                     echo $imageError ?></span>
             </div>
 
-            <button type="submit" class="btn py-2 px-4 btn-primary" name="addSupervisor">
+            <button type="submit" class="btn py-2 px-4 btn-primary" name="addSupervisor"
+                    style="font-size: 14px; font-weight: bold">
                 إضافة
             </button>
 

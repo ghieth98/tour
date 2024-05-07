@@ -14,7 +14,7 @@ include "../validate.php";
 
 // Query api_records table for the url
 
-$city_query = $con->query("SELECT * FROM city   ");
+$city_query = $con->query("SELECT * FROM city  ORDER BY city_id ");
 $city_query->execute();
 $cities = $city_query->fetchAll(PDO::FETCH_ASSOC);
 
@@ -35,49 +35,35 @@ $tripLength = $dateDifference->days;
 // Initialize variables
 $selectedCities = [];
 $selectedDays = 0;
+$exceeded = false; // Flag to track if trip length has been exceeded
 
 // Iterate through cities
 foreach ($cities as $city) {
     // Check if adding this city exceeds trip length
-    if ($selectedDays + $city['recommend_days'] <= $tripLength) {
+    if (!$exceeded && $selectedDays + $city['recommend_days'] <= $tripLength) {
         $selectedCities[] = $city;
         $selectedDays += $city['recommend_days'];
     } else {
-        break;
+        // If adding this city exceeds trip length, stop selecting cities
+        $selectedCities[] = $city;
+        $selectedDays += $city['recommend_days'];
+break;
     }
 }
 
 // Now $selectedCities contains the cities selected for the trip
+ $totalRecommendedDays = array_sum(array_column($selectedCities, 'recommend_days'));
 
-// Calculate total recommended days
-$totalRecommendedDays = array_sum(array_column($selectedCities, 'recommend_days'));
-echo $totalRecommendedDays;
 // Allocate days for each city
 foreach ($selectedCities as &$city) {
-    $city['allocated_days'] = round(($city['recommend_days'] / $totalRecommendedDays) * $tripLength);
+    $city['allocated_days'] = '';
+     $percentage = $city['recommend_days'] / $totalRecommendedDays;
+     $city['allocated_days'] = round($percentage * $tripLength);
 }
-
-
 
 // Check if allocated days exceed trip length
 $totalAllocatedDays = array_sum(array_column($selectedCities, 'allocated_days'));
-if ($totalAllocatedDays > $tripLength) {
-    // If total allocated days exceed trip length, adjust
-    $excessDays = $totalAllocatedDays - $tripLength;
-    $lastCityIndex = count($selectedCities) - 1;
-    while ($excessDays > 0) {
-        for ($i = $lastCityIndex; $i >= 0; $i--) {
-            if ($selectedCities[$i]['allocated_days'] > 0) {
-                $selectedCities[$i]['allocated_days'] -= 1;
-                $excessDays -= 1;
-                if ($excessDays == 0) break;
-            }
-        }
-    }
-}
-echo '<pre>';
-print_r($selectedCities);
-echo '</pre>';
+
 
 
 // Step 3: Ordering Cities Based on Regions
@@ -86,17 +72,16 @@ echo '</pre>';
 $regionOrder = ['center', 'east', 'south', 'west', 'north'];
 
 // Sort cities based on regions
-usort($selectedCities, function($a, $b) use ($regionOrder) {
+usort($selectedCities, function ($a, $b) use ($regionOrder) {
     $regionIndexA = array_search($a['region'], $regionOrder);
     $regionIndexB = array_search($b['region'], $regionOrder);
     return $regionIndexA <=> $regionIndexB;
 });
 
 
-
 // If you want to print or use the ordered cities
-foreach ($selectedCities as $city) {
-    echo $city['name'].", ".$city['region'].", ".$city['allocated_days']." days<br>";
+foreach ($selectedCities as $index) {
+    echo $index['name'].", ".$index['region'].", ".$index['allocated_days']." days<br>";
 }
 
 

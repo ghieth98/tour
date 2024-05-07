@@ -14,7 +14,13 @@ include "../validate.php";
 
 // Query api_records table for the url
 
-$city_query = $con->query("SELECT * FROM city  ORDER BY city_id ");
+$city_query = $con->query("
+    SELECT city.*, AVG(r.stars) AS avg_rating 
+    FROM city  
+    LEFT JOIN rate r ON city.city_id = r.city_id 
+    GROUP BY city.city_id 
+    ORDER BY avg_rating DESC
+");
 $city_query->execute();
 $cities = $city_query->fetchAll(PDO::FETCH_ASSOC);
 
@@ -35,39 +41,35 @@ $tripLength = $dateDifference->days;
 // Initialize variables
 $selectedCities = [];
 $selectedDays = 0;
-$exceeded = false; // Flag to track if trip length has been exceeded
 
 // Iterate through cities
 foreach ($cities as $city) {
     // Check if adding this city exceeds trip length
-    if (!$exceeded && $selectedDays + $city['recommend_days'] <= $tripLength) {
-        $selectedCities[] = $city;
+    $selectedCities[] = $city;
+    if ($selectedDays + $city['recommend_days'] <= $tripLength) {
         $selectedDays += $city['recommend_days'];
     } else {
-        // If adding this city exceeds trip length, stop selecting cities
-        $selectedCities[] = $city;
+        // Stop adding cities after adding the last exceeded city
         $selectedDays += $city['recommend_days'];
-break;
+        break;
     }
 }
 
 // Now $selectedCities contains the cities selected for the trip
- $totalRecommendedDays = array_sum(array_column($selectedCities, 'recommend_days'));
+$totalRecommendedDays = array_sum(array_column($selectedCities, 'recommend_days'));
 
 // Allocate days for each city
 foreach ($selectedCities as &$city) {
     $city['allocated_days'] = '';
-     $percentage = $city['recommend_days'] / $totalRecommendedDays;
-     $city['allocated_days'] = round($percentage * $tripLength);
+    $percentage = $city['recommend_days'] / $totalRecommendedDays;
+    $city['allocated_days'] = round($percentage * $tripLength);
 }
 
 // Check if allocated days exceed trip length
 $totalAllocatedDays = array_sum(array_column($selectedCities, 'allocated_days'));
 
 
-
 // Step 3: Ordering Cities Based on Regions
-// Define your regions and their priorities
 // Define region order
 $regionOrder = ['center', 'east', 'south', 'west', 'north'];
 
@@ -79,11 +81,13 @@ usort($selectedCities, function ($a, $b) use ($regionOrder) {
 });
 
 
-// If you want to print or use the ordered cities
 foreach ($selectedCities as $index) {
-    echo $index['name'].", ".$index['region'].", ".$index['allocated_days']." days<br>";
+    echo $index['city_id'].", ".$index['region'].", ".$index['allocated_days']." days<br>";
 }
 
+$selectedCitiesIds = array_map(function ($item) {
+    return $item["city_id"];
+}, $selectedCities);
 
 $budget = validate($_POST['budget']);
 $age = validate($_POST['age']);
@@ -94,11 +98,63 @@ $adventurousness = validate($_POST['adventurousness']);
 $space = validate($_POST['space']);
 $environment = validate($_POST['environment']);
 
+$query = $con->prepare("
+    SELECT      destination.*,
+  di.image AS destination_image,
+  destination.name AS destination_name,
+   c.*,
+  a.*,
+  r.stars,
+   COUNT(DISTINCT f.favorite_id) AS favorite_count FROM destination 
+        JOIN tours.attraction a ON destination.destination_id = a.destination_id
+       JOIN (
+      SELECT destination_id, MIN(destination_image_id) AS first_image_id
+     FROM tours.destination_images
+       GROUP BY destination_id
+    ) AS first_images ON destination.destination_id = first_images.destination_id
+    JOIN tours.destination_images AS di ON first_images.first_image_id = di.destination_image_id
+    LEFT JOIN tours.favorite AS f ON destination.destination_id = f.destination_id
+    LEFT JOIN tours.rate AS r ON destination.destination_id = r.destination_id
+    JOIN tours.city c ON c.city_id = destination.city_id
+    WHERE
+        a.budget = ?
+        AND a.age = ?
+        AND a.needs = ?
+        AND a.morningness = ?
+        AND a.noiseness = ?
+         AND a.adventurousness = ?
+         AND a.space = ?
+        AND a.environment = ?
+        AND c.city_id IN (".implode(",", $selectedCitiesIds).")
+        GROUP BY
+c.city_id IN (".implode(",", $selectedCitiesIds).")
+");
+
+$query->execute(array(
+    $budget,
+    $age,
+    $needs,
+    $morningness,
+    $noiseness,
+    $adventurousness,
+    $space,
+    $environment
+
+));
+$results = $query->fetchAll(PDO::FETCH_ASSOC);
+
+$cityAllocatedDays = [];
+foreach ($selectedCities as $index) {
+    $cityAllocatedDays[$index['city_id']] = $index['allocated_days'];
+}
+// Add allocated days to each city in the results array
+foreach ($results as &$result) {
+    $cityId = $result['city_id'];
+    $result['allocated_days'] = $cityAllocatedDays[$cityId];
+}
 
 $successMsg = $_GET['success_message'] ?? '';
 
-$city_id = isset($_GET['city_id']) && is_numeric($_GET['city_id']) ?
-    intval($_GET['city_id']) : 0;
 ?>
 
 <!doctype html>
@@ -235,14 +291,19 @@ $city_id = isset($_GET['city_id']) && is_numeric($_GET['city_id']) ?
                             <a href="../destination_info.php?destination_id=<?php
                             echo $result['destination_id'] ?>">
                                 <h5 class="card-title"><?php
-                                    echo $result['name'] ?></h5>
+                                    echo $result['destination_name'] ?></h5>
                             </a>
                             <p class="card-text"><?php
                                 echo substr($result['description'], 0, 300) ?>...</p>
-                            <p class="text-muted"> أوقات العمل : <?php
-                                echo $result['working_hours'] ?> </p>
+                            <p class="text-muted"> أوقات العمل : من: <?php
+                                echo date("H:i A", strtotime($result['start_date']));
+                                ?> إلى:
+                                <?php
+                                echo date("H:i A", strtotime($result['end_date'])); ?> </p>
                             <p class="text-muted"> اسم المدينة : <?php
-                                echo $result['city_name'] ?> </p>
+                                echo $result['name'] ?> </p>
+                            <p class="text-muted"> عدد الأيام المخصصة : <?php
+                                echo $result['allocated_days'] ?> </p>
                             <p class="text-muted">رقم الهاتف: <?php
                                 echo $result['phone_number'] ?></p>
 

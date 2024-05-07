@@ -14,9 +14,9 @@ include "../validate.php";
 
 // Query api_records table for the url
 
-$city_query = $con->query("SELECT * FROM city ORDER BY city_id  ");
+$city_query = $con->query("SELECT * FROM city   ");
 $city_query->execute();
-$cities = $city_query->fetchAll(PDO::FETCH_ASSOC);
+$cities = $city_query->fetchAll();
 
 
 // Get the start and end dates from the form submission
@@ -31,42 +31,48 @@ $endDate = new DateTime($end_date);
 $dateDifference = $startDate->diff($endDate);
 // Get the number of days from the DateInterval object
 $tripLength = $dateDifference->days;
-$region = $_POST['region'];
 
 $totalDays = 0;
+$selectedCities = [];
 
+// Step 1: City Selection
 foreach ($cities as $city) {
+    // Check if adding the current city's recommended days exceeds trip length
+
     if ($totalDays + $city['recommend_days'] <= $tripLength) {
         $selectedCities[] = $city;
         $totalDays += $city['recommend_days'];
-    }else{
-        break;
+
+    } else {
+        break; // Stop selecting cities if trip length is exceeded
     }
 }
-echo $totalDays;
+
+$allocatedDays = [];
 // Step 2: Days Distribution
-foreach ($selectedCities as &$city) {
-   echo $percentage = $city['recommend_days'] / $totalDays;
-    $allocatedDays[$city['region']] = round($tripLength * $percentage);
+foreach ($selectedCities as $city) {
+    $percentage = $city['recommend_days'] / $totalDays;
+    $allocatedDays[] = round($tripLength * $percentage);
 }
 
 // Adjust allocated days if exceeds trip length
-$allocatedDaysSum = array_sum(array_column($selectedCities, 'allocated_days'));
+$allocatedDaysSum = array_sum($allocatedDays);
 if ($allocatedDaysSum > $tripLength) {
     $diff = $allocatedDaysSum - $tripLength;
     $index = count($selectedCities) - 1;
     while ($diff > 0) {
-        $selectedCities[$index]['allocated_days']--;
+        if ($allocatedDays[$index] > 0) {
+            $allocatedDays[$index]--;
+            $diff--;
+        }
         $index--;
         if ($index < 0) {
             $index = count($selectedCities) - 1;
         }
-        $diff--;
     }
 }
-
 echo '<pre>';
-print_r($selectedCities);
+print_r($allocatedDays);
 echo '</pre>';
 
 // Step 3: Ordering Cities Based on Regions
@@ -207,7 +213,9 @@ if (count($missingRegions) == 0) {
             $regionOrder[] = array_search("north", $regions);
         }
     }
-
+    echo '<pre>';
+    print_r($regionOrder);
+    echo '</pre>';
     // Get the rest of the available regions
     $remainingRegions = array_diff($regions, $missingRegions);
     foreach ($remainingRegions as $region) {

@@ -119,17 +119,6 @@ include "../connection.php";
                             </div>
                             <div class="mb-2 mt-2 " id="result"></div>
 
-                            <div class="mb-3">
-                                <label class="form-label" for="weather">المنطقة:</label><br>
-                                <input type="checkbox" id="centerRegion" name="region[]" value="center">
-                                <label class="form-check-label ml-1" for="centerRegion">المنطقة الوسطي</label><br>
-                                <input type="checkbox" id="eastRegion" name="region[]" value="east">
-                                <label class="form-check-label ml-1" for="eastRegion">المنطقة الشرقية</label><br>
-                                <input type="checkbox" id="westRegion" name="region[]" value="west">
-                                <label class="form-check-label ml-1" for="westRegion">المنطقة الغربية</label><br>
-                                <input type="checkbox" id="southRegion" name="region[]" value="south">
-                                <label class="form-check-label ml-1" for="southRegion">المنطقة الجنوبية</label><br>
-                            </div>
 
                             <div class="mb-3">
                                 <label class="form-label">ميزانية السائح:</label><br>

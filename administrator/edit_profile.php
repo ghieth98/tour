@@ -73,7 +73,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         header("Location: edit_profile.php?success_message=".urlencode($successMsg));
         exit;
     }
-
 }
 
 $successMsg = $_GET['success_message'] ?? '';
@@ -124,18 +123,21 @@ $successMsg = $_GET['success_message'] ?? '';
     <div class="container">
         <div class="site-navigation d-flex justify-content-between align-items-center">
             <a class="m-0 float-right" href="../index.php">
-                <img src="../assets/images/logo.PNG" alt="" style="height: 120px; width: 100px; font-weight: bold; color: white;">
+                <img src="../assets/images/logo.PNG" alt=""
+                     style="height: 120px; width: 100px; font-weight: bold; color: white;">
                 <span class="text-primary"></span>
             </a>
 
-            <ul class="js-clone-nav d-none d-lg-inline-block text-right site-menu float-left align-items-center" style="font-weight: bold; font-size: 24px;">
+            <ul class="js-clone-nav d-none d-lg-inline-block text-right site-menu float-left align-items-center"
+                style="font-weight: bold; font-size: 24px;">
                 <li><a href="dashboard.php">الصفحة الرئيسية</a></li>
-                <li><a href="edit_profile.php">تعديل بيانات الملف الشخصي</a></li>
+                <li><a href="edit_profile.php">الملف الشخصي</a></li>
                 <!-- <li><a href="add_api_url.php">أضافة رابط الربط</a></li> -->
-                <li><a href="../logout.php">تسجيل الخروج</a></li>
+                <li><a href="../logout.php" onclick="return confirm('هل تريد تسجيل الخروج؟')">تسجيل الخروج</a></li>
             </ul>
 
-            <a class="burger ml-auto float-right site-menu-toggle js-menu-toggle d-inline-block d-lg-none light" data-target="#main-navbar" data-toggle="collapse" href="../index.php">
+            <a class="burger ml-auto float-right site-menu-toggle js-menu-toggle d-inline-block d-lg-none light"
+               data-target="#main-navbar" data-toggle="collapse" href="../index.php">
                 <span></span>
             </a>
         </div>
@@ -144,12 +146,13 @@ $successMsg = $_GET['success_message'] ?? '';
 <!-- End Navbar Section -->
 
 <!-- Start Hero Section -->
-<div class="hero hero-inner" style="background: url('../assets/images/hala-alghanim-f5ZB0LHwi0s-unsplash.jpg'); background-size: cover; position: relative;">
+<div class="hero hero-inner"
+     style="background: url('../assets/images/hala-alghanim-f5ZB0LHwi0s-unsplash.jpg'); background-size: cover; position: relative;">
     <div class="container">
         <div class="row align-items-center">
             <div class="col-lg-8 mx-auto text-center">
                 <div class="intro-wrap">
-                    <h1 class="mb-0">تعديل بيانات الملف الشخصي</h1>
+                    <h1 class="mb-0">الملف الشخصي</h1>
                 </div>
             </div>
         </div>
@@ -159,45 +162,60 @@ $successMsg = $_GET['success_message'] ?? '';
 
 <!-- Start Our Supervisor Section -->
 <div class="px-5 py-5" style="min-height: 80vh;">
-    <?php if ($successMsg): ?>
+    <?php
+    if ($successMsg): ?>
         <div id="successMessage" class="d-flex justify-content-center py-3">
             <div class="alert alert-success w-50 text-center" role="alert">
-                <?php echo $successMsg; ?>
+                <?php
+                echo $successMsg; ?>
             </div>
         </div>
-    <?php endif; ?>
+    <?php
+    endif; ?>
 
     <div class="row justify-content-center">
         <div class="col-md-5">
-            <div  class="bg-white rounded shadow p-5 text-center">
-                <form  method="post" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" style="font-size:
+            <div class="bg-white rounded shadow p-5 text-center">
+                <form method="post" action="<?php
+                echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" style="font-size:
                  15px">
 
                     <div dir="rtl" class="mb-3">
                         <label for="name" class="form-label">الاسم</label>
-                        <input type="text" class="form-control" id="name" name="name" value="<?php echo $admin['name']; ?>">
-                        <span class="error"><?php echo $nameError; ?></span>
+                        <input type="text" class="form-control" id="name" name="name" value="<?php
+                        echo $admin['name']; ?>">
+                        <span class="error"><?php
+                            echo $nameError; ?></span>
                     </div>
                     <div class="mb-3">
                         <label class="form-label" for="oldPassword">كلمة المرور</label>
-                        <input type="text" class="form-control" readonly id="oldPassword" name="oldPassword" value="<?php echo $admin['password']; ?>">
+                        <input type="text" class="form-control" readonly id="oldPassword" name="oldPassword"
+                               value="<?php
+                               echo $admin['password']; ?>">
                     </div>
 
                     <div class="mb-3">
                         <label class="form-label" for="password">كلمة المرور الجديدة</label>
                         <input type="password" class="form-control" id="password" name="password">
-                        <span class="error"><?php echo $passwordError ?></span>
+                        <span class="error"><?php
+                            echo $passwordError ?></span>
                     </div>
 
                     <div class="mb-3">
                         <label class="form-label" for="confirmPassword">تأكيد كلمة المرور</label>
                         <input type="password" class="form-control" id="confirmPassword" name="confirmPassword">
-                        <span class="error"><?php echo $confirmPasswordError ?></span>
+                        <span class="error"><?php
+                            echo $confirmPasswordError ?></span>
 
                     </div>
+                    <div class="d-flex ">
 
-                    <button type="submit" class="btn btn-primary btn-block mt-2" name="editProfile">تعديل البيانات
-                        الشخصية</button>
+                        <button type="submit" class="btn btn-primary btn-block mt-2 mr-2" name="editProfile">تعديل
+                            البيانات
+                            الشخصية
+                        </button>
+                        <a href="javascript:history.back()" class="btn btn-secondary btn-block mt-2 mr-2">إلغاء</a>
+                    </div>
 
                 </form>
             </div>

@@ -45,7 +45,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         // If all validations pass, insert new supervisor into the database
         $stmt = $con->prepare("INSERT INTO supervisor(name, email, password) VALUES (?, ?, ?)");
         $stmt->execute([$name, $email, $password]);
-        $successMsg = 'تم إضافة مسؤول جديد بنجاح';
+        $successMsg = 'تم إضافة مشرف جديد بنجاح';
 
         require "../Mail/phpmailer/PHPMailerAutoload.php";
         $mail = new PHPMailer(true);
@@ -58,10 +58,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $mail->SMTPAuth = true;
         $mail->SMTPSecure = 'tls';
 
-        $mail->Username = 'hossamghieth@gmail.com'; //gmail here
-        $mail->Password = 'aagqtfmyhuelfkac'; // password here
+        $mail->Username = ''; //gmail here
+        $mail->Password = ''; // password here
 
-        $mail->setFrom('hossamghieth@gmail.com', 'كلمة مرور مشرف التوصية بالجولات'); //Insert gmail here
+        $mail->setFrom('', 'كلمة مرور مشرف التوصية بالجولات'); //Insert gmail here
 
         $mail->addAddress($email);
 
@@ -155,9 +155,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
             <ul class="js-clone-nav d-none d-lg-inline-block text-right site-menu float-left align-items-center" style="font-weight: bold; font-size: 24px;">
                 <li><a href="dashboard.php">الصفحة الرئيسية</a></li>
-                <li><a href="edit_profile.php">تعديل بيانات الملف الشخصي</a></li>
+                <li><a href="edit_profile.php">الملف الشخصي</a></li>
                 <!-- <li><a href="add_api_url.php">أضافة رابط الربط</a></li> -->
-                <li><a href="../logout.php">تسجيل الخروج</a></li>
+                <li><a href="../logout.php" onclick="return confirm('هل تريد تسجيل الخروج؟')">تسجيل الخروج</a></li>
             </ul>
 
             <a class="burger ml-auto float-right site-menu-toggle js-menu-toggle d-inline-block d-lg-none light" data-target="#main-navbar" data-toggle="collapse" href="../index.php">

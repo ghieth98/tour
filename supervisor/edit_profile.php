@@ -143,7 +143,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 <li class=""><a href="show_destinations.php">عرض الوجهات</a></li>
                 <li class=""><a href="show_reports.php">عرض البلاغات</a></li>
                 <!--                <li class=""><a href="show_tourists.php">إدارة السياح</a></li>-->
-                <li><a href="../logout.php">تسجيل الخروج</a></li>
+                <li><a href="../logout.php" onclick="return confirm('هل تريد تسجيل الخروج؟')">تسجيل الخروج</a></li>
             </ul>
 
             <a class="burger ml-auto float-right site-menu-toggle js-menu-toggle d-inline-block d-lg-none light"
@@ -163,7 +163,7 @@ relative;">
         <div class="row align-items-center">
             <div class="col-lg-8 mx-auto text-center">
                 <div class="intro-wrap">
-                    <h1 class="mb-0">تعديل بيانات الملف الشخصي</h1>
+                    <h1 class="mb-0">الملف الشخصي</h1>
 
                 </div>
             </div>

@@ -24,10 +24,11 @@ $destination_id = isset($_GET['destination_id']) && is_numeric($_GET['destinatio
 
 // Fetch destination details from the database
 $query = $con->prepare("
-    SELECT  d.destination_id,d.start_date, d.end_date, d.name, d.description, d.phone_number, r.stars, f.tourist_id
+    SELECT  d.destination_id,d.start_date, d.end_date, d.name, d.description, d.phone_number, r.stars, f.tourist_id, c.*
     FROM destination AS d 
     LEFT JOIN tours.favorite f on d.destination_id = f.destination_id
     LEFT JOIN tours.rate r on d.destination_id = r.destination_id
+    LEFT JOIN tours.city c on c.city_id = d.city_id
     WHERE d.destination_id = ?
 ");
 $query->execute([$destination_id]);
@@ -513,6 +514,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 <div class="pr-5 pb-3 bg-light">
                     <form action="tourist/includes/add_rating.php?destination_id=<?php
                     echo $destination_id ?>" method="post">
+                        <input type="hidden" name="city_id" value="<?php echo $destination['city_id'] ?>">
                         <div class="form-group  w-50">
                             <div class="stars ">
 

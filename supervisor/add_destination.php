@@ -247,11 +247,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
             <ul class="js-clone-nav d-none d-lg-inline-block text-right site-menu float-left align-items-center" style="font-weight: bold; font-size: 24px;">
                 <li class=""><a href="dashboard.php">الصفحة الرئيسية</a></li>
-                <li class=""><a href="edit_profile.php">تعديل بيانات الملف الشخصي</a></li>
+                <li class=""><a href="edit_profile.php">الملف الشخصي</a></li>
                 <li class=""><a href="show_destinations.php">عرض الوجهات</a></li>
                 <li class=""><a href="show_reports.php">عرض البلاغات</a></li>
                 <!--                <li class=""><a href="show_tourists.php">إدارة السياح</a></li>-->
-                <li><a href="../logout.php">تسجيل الخروج</a></li>
+                <li><a href="../logout.php" onclick="return confirm('هل تريد تسجيل الخروج؟')">تسجيل الخروج</a></li>
             </ul>
 
             <a class="burger ml-auto float-left site-menu-toggle js-menu-toggle d-inline-block d-lg-none light"

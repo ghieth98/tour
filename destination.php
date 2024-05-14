@@ -88,38 +88,24 @@ $successMsg = $_GET['success_message'] ?? '';
 <!--Start Navbar Section-->
 <nav class="site-nav">
     <div class="container">
-        <div class="site-navigation">
-            <a class="logo m-0 float-right" href="index.php">توصية بالجولات <span class="text-primary"></span></a>
+        <div class="site-navigation d-flex justify-content-between align-items-center">
+            <a class="m-0 float-right" href="../index.php">
+                <img src="assets/images/logo.PNG" alt=""
+                     style="height: 120px; width: 100px; font-weight: bold; color: white;">
+                <span class="text-primary"></span>
+            </a>
 
-            <ul class="js-clone-nav d-none d-lg-inline-block text-right site-menu float-left">
-                <li class="active"><a href="index.php">الرئيسية</a></li>
-                <li class="active"><a href="show_cities.php">المدن</a></li>
-                <li><a href="destination.php">الوجهات</a></li>
-
-                <?php
-                if (isset($tourist_id)): ?>
-                    <li><a href="logout.php">تسجيل الخروج</a></li>
-                    <li><a class="fa-solid fa-user" href="tourist/dashboard.php"></a></li>
-                <?php
-                elseif (isset($supervisor_id)): ?>
-                    <li><a href="logout.php">تسجيل الخروج</a></li>
-                    <li><a class="fa-solid fa-user" href="supervisor/dashboard.php"></a></li>
-                <?php
-                elseif (isset($administrator_id)): ?>
-                    <li><a href="logout.php">تسجيل الخروج</a></li>
-                    <li><a class="fa-solid fa-user" href="administrator/dashboard.php"></a></li>
-                <?php
-                else: ?>
-                    <li><a href="signup.php">تسجيل جديد</a></li>
-                    <li><a href="login.php">تسجيل الدخول</a></li>
-                <?php
-                endif; ?>
-
+            <ul class="js-clone-nav d-none d-lg-inline-block text-right site-menu float-left align-items-center" style="font-weight:
+            bold; font-size: 24px;">
+                <li class=""><a href="tourist/dashboard.php">الصفحة الرئيسية</a></li>
+                <li class=""><a href="destination.php">الوجهات</a></li>
+                <li class=""><a href="tourist/edit_profile.php">الملف الشخصي</a></li>
+                <li class=""><a href="tourist/test.php">الاختبار</a></li>
+                <li><a href="logout.php">تسجيل الخروج</a></li>
             </ul>
 
-            <a class="burger ml-auto float-left site-menu-toggle js-menu-toggle d-inline-block d-lg-none light"
-               data-target="#main-navbar"
-               data-toggle="collapse" href="index.php">
+            <a class="burger ml-auto float-right site-menu-toggle js-menu-toggle d-inline-block d-lg-none light"
+               data-target="#main-navbar" data-toggle="collapse" href="../index.php">
                 <span></span>
             </a>
 
@@ -129,10 +115,9 @@ $successMsg = $_GET['success_message'] ?? '';
 <!--End navbar Section-->
 
 <!-- Start Hero Section-->
-<div class="hero hero-inner" style="
-    background: url('assets/images/mohammed-alorabi-_ABfNIGGsZk-unsplash.jpg')  center ;
-    background-size: cover;
-    position: relative;">
+<div class="hero hero-inner" style="background: url('assets/images/m-k-R1gC_gJaJ14-unsplash.jpg')  ;
+ background-size: cover;
+ position:relative;">
     <div class="container">
         <div class="row align-items-center">
             <div class="col-lg-6 mx-auto text-center">
@@ -149,10 +134,16 @@ $successMsg = $_GET['success_message'] ?? '';
 <div class="untree_co-section">
 
 
-    <div class="row row-cols-1 row-cols-md-3 g-4 p-5 text-right" data-aos="fade-up" data-aos-delay="500">
-
         <div class="col-lg-12 text-center">
-            <h2 class="section-title text-center mb-3">الوجهات</h2>
+            <div class=" ">
+                <h2 class="section-title text-center mb-3">الوجهات</h2>
+
+
+            </div>
+            <div class="px-2 m-5 w-25">
+                <label for="search"></label>
+                <input type="text" class="form-control" id="search" placeholder="ابحث هنا...">
+            </div>
             <?php
             if ($successMsg): ?>
                 <div class="d-flex justify-content-center">
@@ -165,73 +156,76 @@ $successMsg = $_GET['success_message'] ?? '';
             endif; ?>
         </div>
 
-        <?php
-        foreach ($destinations as $destination): ?>
-            <!--Start Card-->
-            <div class="col-lg-3 rounded col-md-6 mb-3 ">
-                <div class="card h-100 shadow">
+    <div class="row row-cols-1 row-cols-md-3 g-4 p-5 text-right" id="showSearch">
+    <?php
+    foreach ($destinations as $destination): ?>
+
+        <!--Start Card-->
+        <div class="col-lg-3 rounded col-md-6 mb-3 ">
+            <div class="card h-100 shadow">
+                <a href="destination_info.php?destination_id=<?php
+                echo $destination['destination_id'] ?>">
+                    <img alt="صورة الوجهة" class="card-img-top" style="height: 300px"
+                         src="uploads/<?php
+                         echo $destination['destination_image'] ?>">
+                </a>
+                <div class="card-body">
                     <a href="destination_info.php?destination_id=<?php
                     echo $destination['destination_id'] ?>">
-                        <img alt="صورة الوجهة" class="card-img-top" style="height: 300px"
-                             src="uploads/<?php
-                             echo $destination['destination_image'] ?>">
+                        <h5 class="card-title"><?php
+                            echo $destination['name'] ?></h5>
                     </a>
-                    <div class="card-body">
-                        <a href="destination_info.php?destination_id=<?php
-                        echo $destination['destination_id'] ?>">
-                            <h5 class="card-title"><?php
-                                echo $destination['name'] ?></h5>
-                        </a>
-                        <p class="card-text"><?php
-                            echo substr($destination['description'], 0, 300) ?>...</p>
-                        <p class="text-muted"> أوقات العمل : من: <?php
-                            echo date("H:i A", strtotime($destination['start_date']));
-                            ?> إلى:
-                            <?php
-                            echo date("H:i A", strtotime($destination['end_date'])); ?> </p>
-                        <p class="text-muted"> اسم المدينة : <?php
-                            echo $destination['city_name'] ?> </p>
-                        <p class="text-muted">رقم الهاتف: <?php
-                            echo $destination['phone_number'] ?></p>
+                    <p class="card-text"><?php
+                        echo substr($destination['description'], 0, 300) ?>...</p>
+                    <p class="text-muted"> أوقات العمل : من: <?php
+                        echo date("H:i A", strtotime($destination['start_date']));
+                        ?> إلى:
+                        <?php
+                        echo date("H:i A", strtotime($destination['end_date'])); ?> </p>
+                    <p class="text-muted"> اسم المدينة : <?php
+                        echo $destination['city_name'] ?> </p>
+                    <p class="text-muted">رقم الهاتف: <?php
+                        echo $destination['phone_number'] ?></p>
 
 
-                        <form method="post" action="add_favorite.php?destination_id=<?php
-                        echo $destination['destination_id'] ?>">
+                    <form method="post" action="add_favorite.php?destination_id=<?php
+                    echo $destination['destination_id'] ?>">
 
-                            <input type="hidden" name="city_id" value="<?php
-                            echo $destination['city_id'] ?>">
+                        <input type="hidden" name="city_id" value="<?php
+                        echo $destination['city_id'] ?>">
+                        <?php
+                        $favorite = $destination['favorite_count'] > 0 ?>
+                        <?php
+                        if (isset($tourist_id)) : ?>
                             <?php
-                            $favorite = $destination['favorite_count'] > 0 ?>
+                            if ($favorite): ?>
+                                <button style="background: none; border: none; padding: 0; cursor: pointer;">
+                                    <i class="fa-solid fa-xl fa-heart pl-3 favorite"
+                                       type="submit"></i>
+                                </button>
                             <?php
-                            if (isset($tourist_id)) : ?>
-                                <?php
-                                if ($favorite): ?>
-                                    <button style="background: none; border: none; padding: 0; cursor: pointer;">
-                                        <i class="fa-solid fa-xl fa-heart pl-3 favorite"
-                                           type="submit"></i>
-                                    </button>
-                                <?php
-                                else: ?>
-                                    <button style="background: none; border: none; padding: 0; cursor: pointer;">
-                                        <i class="fa-regular fa-xl fa-heart pl-3 " style="cursor: pointer;"
-                                           type="submit"></i>
-                                    </button>
-                                <?php
-                                endif; ?>
+                            else: ?>
+                                <button style="background: none; border: none; padding: 0; cursor: pointer;">
+                                    <i class="fa-regular fa-xl fa-heart pl-3 " style="cursor: pointer;"
+                                       type="submit"></i>
+                                </button>
                             <?php
                             endif; ?>
-                            <i class="fa-solid fa-star " style="color: #f3f31c"></i> <?php
-                            echo $destination['stars'] ?>
-                        </form>
+                        <?php
+                        endif; ?>
+                        <i class="fa-solid fa-star " style="color: #f3f31c"></i> <?php
+                        echo $destination['stars'] ?>
+                    </form>
 
 
-                    </div>
                 </div>
             </div>
-            <!--End Card-->
-        <?php
-        endforeach; ?>
-    </div>
+        </div>
+        <!--End Card-->
+    <?php
+    endforeach; ?>
+</div>
+
 </div>
 <!--End Destination Section-->
 
@@ -270,7 +264,31 @@ $successMsg = $_GET['success_message'] ?? '';
 <script src="assets/js/aos.js"></script>
 
 <script src="assets/js/custom.js"></script>
+<script>
 
+    $(document).ready(function () {
+        // Store the original HTML content of the table body
+        const originalTableContent = $("#showSearch").html();
+
+        $('#search').on('keyup', function () {
+            let search = $(this).val().trim(); // Trim the search string to handle empty space
+            if (search !== '') {
+                $.ajax({
+                    method: 'POST',
+                    url: 'tourist/includes/search_destination.php',
+                    data: {name: search},
+                    success: function (response) {
+                        $("#showSearch").html(response);
+                    }
+                });
+            } else {
+                // If search is empty, display the original table content
+                $("#showSearch").html(originalTableContent);
+            }
+        });
+
+    });
+</script>
 </body>
 
 </html>

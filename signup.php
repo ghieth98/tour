@@ -27,6 +27,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $emailError = 'الرجاء أدخال البريد الإلكتروني';
     } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         $emailError = 'صيغة البريد الإلكتروني غير صحيحة';
+    } elseif ($emails_count > 0) {
+        foreach ($tourists_emails as $tourists_email) {
+            if ($tourists_email['email'] == $email) {
+                $emailError = 'هذا البريد الإلكتروني موجود مسبقا';
+            }
+        }
     } elseif (empty($password)) {
         $passwordError = 'الرجاء أدخال كلمة المرور';
     } elseif (strlen($password) <= 8) {
@@ -65,8 +71,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     <link href="https://fonts.googleapis.com" rel="preconnect">
     <link crossorigin href="https://fonts.gstatic.com" rel="preconnect">
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@200;300;400;500;600&family=El+Messiri:wght@400;500;600;700&family=Rubik:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&display=swap"
-          rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cairo:wght@200;300;400;500;600&family=El+Messiri:wght@400;500;600;700&family=Rubik:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&display=swap"
+        rel="stylesheet">
 
     <link href="assets/css/bootstrap.min.css" rel="stylesheet">
     <link href="assets/css/owl.carousel.min.css" rel="stylesheet">
@@ -101,7 +108,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <nav class="site-nav">
     <div class="container">
         <div class="site-navigation">
-            <a class="logo m-0 float-right" >
+            <a class="logo m-0 float-right">
                 <img src="assets/images/logo.PNG" alt="" style="height: 160px; padding-bottom: 50px">
                 <span class="text-primary">
                 </span>
@@ -113,22 +120,26 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 <li class="active"><a href="index.php">الرئيسية</a></li>
                 <li class="active"><a href="signup.php">تسجيل جديد</a></li>
 
-                <?php if (isset($tourist_id)): ?>
+                <?php
+                if (isset($tourist_id)): ?>
                     <li><a class="fa-solid fa-user" href="tourist/dashboard.php"></a></li>
                     <li><a href="logout.php">تسجيل الخروج</a></li>
 
-                <?php elseif(isset($supervisor_id)):  ?>
+                <?php
+                elseif (isset($supervisor_id)): ?>
 
                     <li><a class="fa-solid fa-user" href="supervisor/dashboard.php"></a></li>
                     <li><a href="logout.php">تسجيل الخروج</a></li>
 
-                <?php elseif(isset($administrator_id)):  ?>
+                <?php
+                elseif (isset($administrator_id)): ?>
 
                     <li><a class="fa-solid fa-user" href="administrator/dashboard.php"></a></li>
                     <li><a href="logout.php">تسجيل الخروج</a></li>
 
 
-                <?php endif;  ?>
+                <?php
+                endif; ?>
 
             </ul>
 
@@ -176,19 +187,23 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                         <div class="form-outline flex-fill mb-0 text-right">
                                             <label class="form-label " for="name">الاسم</label>
                                             <input class="form-control" id="name" name="name"
-                                                   value="<?php echo $name ?>"
+                                                   value="<?php
+                                                   echo $name ?>"
                                                    type="text"/>
-                                            <span class="error"><?php echo $nameError ?></span>
+                                            <span class="error"><?php
+                                                echo $nameError ?></span>
                                         </div>
                                     </div>
 
                                     <div class="d-flex flex-row align-items-center mb-4">
                                         <div class="form-outline flex-fill mb-0 text-right">
                                             <label class="form-label" for="email">البريد الإلكتروني</label>
-                                            <input class="form-control" id="email" value="<?php echo $email ?>"
+                                            <input class="form-control" id="email" value="<?php
+                                            echo $email ?>"
                                                    name="email"
-                                            type="email"/>
-                                            <span class="error"><?php echo $emailError ?></span>
+                                                   type="email"/>
+                                            <span class="error"><?php
+                                                echo $emailError ?></span>
                                         </div>
                                     </div>
 
@@ -196,7 +211,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                         <div class="form-outline flex-fill mb-0 text-right">
                                             <label class="form-label" for="password">كلمة المرور</label>
                                             <input class="form-control" id="password" name="password" type="password"/>
-                                            <span class="error"><?php echo $passwordError ?></span>
+                                            <span class="error"><?php
+                                                echo $passwordError ?></span>
                                         </div>
                                     </div>
 
@@ -205,7 +221,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                             <label class="form-label" for="confirmPassword">تأكيد كلمة المرور</label>
                                             <input class="form-control" id="confirmPassword" name="confirmPassword"
                                                    type="password"/>
-                                            <span class="error"><?php echo $confirmPasswordError ?></span>
+                                            <span class="error"><?php
+                                                echo $confirmPasswordError ?></span>
                                         </div>
                                     </div>
 

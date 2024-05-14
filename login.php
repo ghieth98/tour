@@ -79,7 +79,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             }
             $con = null;
         } else {
-            $emailError = 'برجاء أدخال البيانات مره أخرى'; // Display error if no matching user is found
+            $emailError = 'البريد او كلمة المرور خاطئة'; // Display error if no matching user is found
 
         }
     }
@@ -95,8 +95,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@200;300;400;500;600&family=El+Messiri:wght@400;500;600;700&family=Rubik:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&display=swap"
-          rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cairo:wght@200;300;400;500;600&family=El+Messiri:wght@400;500;600;700&family=Rubik:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="assets/css/bootstrap.min.css">
     <link rel="stylesheet" href="assets/css/owl.carousel.min.css">
     <link rel="stylesheet" href="assets/css/owl.theme.default.min.css">
@@ -110,7 +111,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <title>توصية بالجولات</title>
 
     <style>
-        .error{
+        .error {
             color: red;
         }
     </style>
@@ -130,7 +131,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <nav class="site-nav">
     <div class="container">
         <div class="site-navigation">
-            <a class="logo m-0 float-right" >
+            <a class="logo m-0 float-right">
                 <img src="assets/images/logo.PNG" alt="" style="height: 160px; padding-bottom: 50px">
                 <span class="text-primary">
                 </span>
@@ -142,22 +143,26 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 <li class="active"><a href="index.php">الرئيسية</a></li>
                 <li class="active"><a href="signup.php">تسجيل جديد</a></li>
 
-                <?php if (isset($tourist_id)): ?>
+                <?php
+                if (isset($tourist_id)): ?>
                     <li><a class="fa-solid fa-user" href="tourist/dashboard.php"></a></li>
                     <li><a href="logout.php">تسجيل الخروج</a></li>
 
-                <?php elseif(isset($supervisor_id)):  ?>
+                <?php
+                elseif (isset($supervisor_id)): ?>
 
                     <li><a class="fa-solid fa-user" href="supervisor/dashboard.php"></a></li>
                     <li><a href="logout.php">تسجيل الخروج</a></li>
 
-                <?php elseif(isset($administrator_id)):  ?>
+                <?php
+                elseif (isset($administrator_id)): ?>
 
                     <li><a class="fa-solid fa-user" href="administrator/dashboard.php"></a></li>
                     <li><a href="logout.php">تسجيل الخروج</a></li>
 
 
-                <?php endif;  ?>
+                <?php
+                endif; ?>
 
             </ul>
 
@@ -190,16 +195,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <!--End Hero Section-->
 
 <!--Start Login Section-->
-<div class="" style="margin-top: 50px" >
+<div class="" style="margin-top: 50px">
     <div class="container ">
-    <?php if ($successMsg):  ?>
-        <div class="d-flex justify-content-center mt-3">
-            <div class="alert alert-success w-50 text-center" role="alert">
-                <?php echo $successMsg ?>
+        <?php
+        if ($successMsg): ?>
+            <div class="d-flex justify-content-center mt-3">
+                <div class="alert alert-success w-50 text-center" role="alert">
+                    <?php
+                    echo $successMsg ?>
+                </div>
             </div>
-        </div>
-    <?php endif;  ?>
-        <div class="row d-flex justify-content-center align-items-center  mb-5" >
+        <?php
+        endif; ?>
+        <div class="row d-flex justify-content-center align-items-center  mb-5">
             <div class="col-lg-6 col-xl-8 ">
                 <div class="card text-black shadow-lg" style="border-radius: 25px;">
                     <div class="card-body p-md-5 ">
@@ -209,15 +217,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                 <h2 class="text-center mb-5">تسجيل الدخول</h2>
 
                                 <form method="post" action="<?php
-                                echo htmlspecialchars($_SERVER['PHP_SELF']) ?>" class="mx-1 mx-md-4" style="font-size: 17px">
+                                echo htmlspecialchars($_SERVER['PHP_SELF']) ?>" class="mx-1 mx-md-4"
+                                      style="font-size: 17px">
 
 
                                     <div class="d-flex flex-row align-items-center mb-4">
                                         <div class="form-outline flex-fill mb-0 text-right">
                                             <label class="form-label" for="email">البريد الإلكتروني</label>
-                                            <input type="email" id="email" name="email" value="<?php echo $email ?>"
-                                            class="form-control"/>
-                                            <span class="error"><?php echo $emailError ?></span>
+                                            <input type="email" id="email" name="email" value="<?php
+                                            echo $email ?>"
+                                                   class="form-control"/>
+                                            <span class="error"><?php
+                                                echo $emailError ?></span>
 
                                         </div>
                                     </div>
@@ -228,11 +239,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                             <label class="form-label" for="password">كلمة المرور</label>
                                             <input type="password" id="password" name="password"
                                                    class="form-control"/>
-                                            <span class="error"><?php echo $passwordError ?></span>
+                                            <span class="error"><?php
+                                                echo $passwordError ?></span>
                                         </div>
                                     </div>
 
 
+                                    <a class="d-flex mb-3" href="signup.php">
+                                        ليس لديك حساب ؟ قم بإنشاء حساب!
+                                    </a>
                                     <a class="d-flex mb-3" href="forgot_password.php">
                                         هل نسيت كلمة المرور ؟
                                     </a>
@@ -256,39 +271,39 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     </div>
 
 
-<div class="site-footer  ">
-    <div class="inner first">
-        <div class="inner dark">
-            <div class="container">
-                <div class="row text-center">
-                    <div class="col-md-8  mb-md-0 mx-auto">
-                        <p>
-                            جميع الحقوق محفوظة للتوصية بالجولات @ 2024
-                        </p>
+    <div class="site-footer  ">
+        <div class="inner first">
+            <div class="inner dark">
+                <div class="container">
+                    <div class="row text-center">
+                        <div class="col-md-8  mb-md-0 mx-auto">
+                            <p>
+                                جميع الحقوق محفوظة للتوصية بالجولات @ 2024
+                            </p>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
-<!--End Footer Section-->
+    <!--End Footer Section-->
 
 
-<!--<div id="overlayer"></div>-->
-<!--<div class="loader">-->
-<!--    <div class="spinner-border" role="status">-->
-<!--        <span class="sr-only">Loading...</span>-->
-<!--    </div>-->
-<!--</div>-->
+    <!--<div id="overlayer"></div>-->
+    <!--<div class="loader">-->
+    <!--    <div class="spinner-border" role="status">-->
+    <!--        <span class="sr-only">Loading...</span>-->
+    <!--    </div>-->
+    <!--</div>-->
 
-<script src="assets/js/jquery-3.4.1.min.js"></script>
-<script src="assets/js/popper.min.js"></script>
-<script src="assets/js/bootstrap.min.js"></script>
-<script src="assets/js/jquery.waypoints.min.js"></script>
-<script src="assets/js/jquery.fancybox.min.js"></script>
-<script src="assets/js/aos.js"></script>
+    <script src="assets/js/jquery-3.4.1.min.js"></script>
+    <script src="assets/js/popper.min.js"></script>
+    <script src="assets/js/bootstrap.min.js"></script>
+    <script src="assets/js/jquery.waypoints.min.js"></script>
+    <script src="assets/js/jquery.fancybox.min.js"></script>
+    <script src="assets/js/aos.js"></script>
 
-<script src="assets/js/custom.js"></script>
+    <script src="assets/js/custom.js"></script>
 
 </body>
 

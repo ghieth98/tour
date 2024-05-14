@@ -98,7 +98,7 @@ $successMsg = $_GET['success_message'] ?? '';
     <div class="container">
         <div class="site-navigation">
             <a class="logo m-0 float-right" >
-                <img src="assets/images/logo.PNG" alt="" style="height: 160px; padding-bottom: 50px">
+                <img src="assets/images/logo.PNG" alt="" style="height: 200px; padding-bottom: 50px">
                 <span class="text-primary">
                 </span>
             </a>

@@ -6,9 +6,8 @@ session_unset();  // unset the data
 
 session_destroy(); // destroy the session
 
-
-header('location: login.php');
+$successMsg = 'تم تسجيل الخروج بنجاح';
+header('location: login.php?message='.$successMsg);
 
 
 exit();
-

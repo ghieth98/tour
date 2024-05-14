@@ -141,8 +141,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
             <ul class="js-clone-nav d-none d-lg-inline-block text-right site-menu float-left align-items-center" style="font-weight: bold; font-size: 24px;">
                 <li class=""><a href="dashboard.php">الصفحة الرئيسية</a></li>
+                <li class=""><a href="../destination.php">الوجهات</a></li>
+                <li class=""><a href="edit_profile.php">الملف الشخصي</a></li>
                 <li class=""><a href="test.php">الاختبار</a></li>
-                <li><a href="../logout.php">تسجيل الخروج</a></li>
+                <li><a href="../logout.php" onclick="return confirm('هل تريد تسجيل الخروج؟')">تسجيل الخروج</a></li>
             </ul>
 
             <a class="burger ml-auto float-right site-menu-toggle js-menu-toggle d-inline-block d-lg-none light" data-target="#main-navbar" data-toggle="collapse" href="../index.php">
@@ -160,7 +162,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         <div class="row align-items-center">
             <div class="col-lg-6 mx-auto text-center">
                 <div class="intro-wrap">
-                    <h1 class="mb-0">تعديل بيانات الملف الشخصي</h1>
+                    <h1 class="mb-0">الملف الشخصي</h1>
 
                 </div>
             </div>

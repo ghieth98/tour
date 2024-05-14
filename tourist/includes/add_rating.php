@@ -30,6 +30,7 @@ $successMsg = '';
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Get the value of stars from the form
     $stars = $_POST['star'];
+    $city_id = $_POST['city_id'];
 
     // Check if stars is empty
     if (empty($stars)) {
@@ -51,9 +52,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     }
         // Prepare a statement to insert the rating into the database
-        $stmt = $con->prepare("INSERT INTO rate (stars, tourist_id, destination_id) VALUES (?,?,?)");
+        $stmt = $con->prepare("INSERT INTO rate (stars, tourist_id, destination_id, city_id) VALUES (?,?,?, ?)");
         // Execute the statement with stars, tourist_id, and destination_id as parameters
-        $stmt->execute([$stars, $tourist_id, $destination_id]);
+        $stmt->execute([$stars, $tourist_id, $destination_id, $city_id]);
         // Set success message for successful rating submission
         $successMsg = 'تم إضافة التقييم بنجاح';
 //         Redirect back to the destination page with the success message

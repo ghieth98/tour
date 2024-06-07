@@ -20,7 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $successMsg = 'تم ازالة المدينة بنجاح';
 
     // Redirect to show_city.php page with success message
-    header("Location:dashboard.php?success_message=" . urlencode($successMsg));
+    header("Location:show_cities.php?success_message=" . urlencode($successMsg));
     exit; // Exit to prevent further execution after redirection
 
 }

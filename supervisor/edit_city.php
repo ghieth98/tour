@@ -1,11 +1,9 @@
 <?php
-
 // Start session to maintain user's session data
 session_start();
 
-if (!isset($_SESSION['email'])) {
-    header('Location: ../login.php');
-    exit;
+if (!(isset($_SESSION['email']))) {
+    header('Location../login.php');
 }
 
 // Include necessary files for validation and database connection
@@ -20,81 +18,45 @@ $query->execute([$city_id]);
 $city = $query->fetch();
 
 // Initialize variables for form fields and error messages
-$name = $description = $weather = '';
-$nameError = $descriptionError = $imageError = $weatherError = '';
+$name = $day = $weather = '';
+$nameError = $dayError = $weatherError = '';
 $successMsg = '';
 
 // Check if form is submitted via POST method
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Sanitize and validate form inputs
     $name = validate($_POST['name']);
-    $description = validate($_POST['description']);
+    $day = validate($_POST['day']);
     $weather = validate($_POST['weather']);
 
-    $oldImage = $_POST['oldImage'];
-
-    $image = $_FILES['image'];
-    $extension = pathinfo($image['name'], PATHINFO_EXTENSION);
-    $extension = strtolower($extension);
-
-    // Validate name, description, weather, and image
+    // Validate name
     if (empty($name)) {
         $nameError = 'الرجاء أدخال اسم المدينة';
-    } elseif (empty($description)) {
-        $descriptionError = 'الرجاء أدخال وصف المدينة';
+    } elseif (empty($day)) {
+        $dayError = 'الرجاء أدخال تاريخ اليوم';
     } elseif (empty($weather)) {
         $weatherError = 'الرجاء أدخال الطقس';
     } else {
-        $imageName = $image['name'];
-        if (!empty($imageName)) {
-            $uploadPath = '../uploads/'.$imageName;
-            move_uploaded_file($image['tmp_name'], $uploadPath); // Use $image['tmp_name']
-        } else {
-            $imageName = $oldImage;
-        }
         // If all validations pass, update city in the database
-        $stmt = $con->prepare("UPDATE city SET name=?, city_description=?, weather=?, city_image=? WHERE city_id=?");
-        $stmt->execute([
-            $name,
-            $description,
-            $weather,
-            $imageName,
-            $city_id
-        ]);
+        $stmt = $con->prepare("UPDATE city SET name=?, day=?, weather=? WHERE city_id=?");
+        $stmt->execute([$name, $day, $weather, $city_id]);
         $successMsg = 'تم تعديل المدينة بنجاح';
-        header("Location: dashboard.php?success_message=".urlencode($successMsg));
+        header("Location: show_cities.php?success_message=" . urlencode($successMsg));
         exit;
     }
 }
 ?>
 
 
-
-<!doctype html>
-<html dir="rtl" lang="ar">
+<html lang="ar" dir="rtl">
 <head>
-    <meta charset="utf-8">
-    <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0,
+           maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>تصوية بالجولات</title>
 
-    <link href="https://fonts.googleapis.com" rel="preconnect">
-    <link crossorigin href="https://fonts.gstatic.com" rel="preconnect">
-    <link
-        href="https://fonts.googleapis.com/css2?family=Cairo:wght@200;300;400;500;600&family=El+Messiri:wght@400;500;600;700&family=Rubik:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&display=swap"
-        rel="stylesheet">
-    <link href="../assets/css/bootstrap.min.css" rel="stylesheet">
-    <link href="../assets/css/owl.carousel.min.css" rel="stylesheet">
-    <link href="../assets/css/owl.theme.default.min.css" rel="stylesheet">
-    <link href="../assets/css/jquery.fancybox.min.css" rel="stylesheet">
-    <link href="../assets/fonts/icomoon/style.css" rel="stylesheet">
-    <link href="../assets/fonts/flaticon/font/flaticon.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
-    <link href="../assets/css/daterangepicker.css" rel="stylesheet">
-    <link href="../assets/css/aos.css" rel="stylesheet">
-    <link href="../assets/css/style111243.css" rel="stylesheet">
-
-    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
-
-    <title>توصية بالجولات</title>
     <style>
         .error {
             color: red
@@ -104,169 +66,43 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             color: green;
         }
     </style>
-</head>
 
+</head>
 <body>
 
-<!--Start mobile toggle section-->
-<div class="site-mobile-menu site-navbar-target">
-    <div class="site-mobile-menu-header">
-        <div class="site-mobile-menu-close">
-            <span class="icofont-close js-menu-toggle"></span>
-        </div>
-    </div>
-    <div class="site-mobile-menu-body"></div>
-</div>
-<!--End mobile toggle section-->
-
-<!--Start Navbar Section-->
-<nav class="site-nav">
-    <div class="container">
-        <div class="site-navigation">
-            <a class="logo m-0 float-right" href="../index.php">توصية بالجولات <span class="text-primary"></span></a>
-
-            <ul class="js-clone-nav d-none d-lg-inline-block text-right site-menu float-left">
-                <li class=""><a href="dashboard.php">الصفحة الرئيسية</a></li>
-                <li class=""><a href="edit_profile.php">تعديل بيانات الملف الشخصي</a></li>
-                <li class=""><a href="show_destinations.php">عرض الوجهات</a></li>
-                <li class=""><a href="show_reports.php">عرض البلاغات</a></li>
-                <!--                <li class=""><a href="show_tourists.php">إدارة السياح</a></li>-->
-                <li><a href="../logout.php">تسجيل الخروج</a></li>
-            </ul>
-
-            <a class="burger ml-auto float-left site-menu-toggle js-menu-toggle d-inline-block d-lg-none light"
-               data-target="#main-navbar"
-               data-toggle="collapse" href="../index.php">
-                <span></span>
-            </a>
-
-        </div>
-    </div>
-</nav>
-<!--End navbar Section-->
-
-<!--Start Hero Section-->
-<div class="hero hero-inner">
-    <div class="container">
-        <div class="row align-items-center">
-            <div class="col-lg-6 mx-auto text-center">
-                <div class="intro-wrap">
-                    <h1 class="mb-0">تعديل المدينة </h1>
-
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-<!--End Hero Section-->
-
-<!--Start add city Section-->
-<div style="height: 70vh">
-    <div class="justify-content-center d-flex text-center center-div bg-white p-5 rounded shadow" style="margin-top:
-190px; ">
-        <form method="post" action="<?php
-        echo htmlspecialchars($_SERVER['REQUEST_URI']) ?>" enctype="multipart/form-data">
-
-            <div class="mb-3">
-                <label class="form-label" for="name">اسم المدينة</label>
-                <input type="text" class="form-control" id="name" name="name"
-                       value="<?php
-                       echo $city['name'] ?>"/>
-                <span class="error"> <?php
-                    echo $nameError ?></span>
-            </div>
-
-            <div class="mb-3">
-                <label class="form-label" for="description">وصف المدينة</label>
-                <textarea name="description" id="description" class="form-control"><?php
-                    echo $city['city_description'] ?></textarea>
-                <span class="error"> <?php
-                    echo $descriptionError ?></span>
-            </div>
-
-            <div class="mb-3">
-                <label class="form-label" for="weather">الفصل:</label><br>
-                <input required type="radio" id="weatherSummer" name="weather" value="الصيف">
-                <label class="form-check-label ml-1" for="weatherSummer">الصيف</label>
-                <input required type="radio" id="weatherWinter" name="weather" value="الشتاء">
-                <label class="form-check-label ml-1" for="weatherWinter">الشتاء</label>
-                <input required type="radio" id="weatherSpring" name="weather" value="الربيع">
-                <label class="form-check-label ml-1" for="weatherSpring">الربيع</label>
-                <input required type="radio" id="weatherAutumn" name="weather" value="الخريف">
-                <label class="form-check-label ml-1" for="weatherAutumn">الخريف</label>
-                <span class="error"> <?php
-                    echo $weatherError ?></span>
-            </div>
+<h1>
+    تعديل بيانات المدينة
+</h1>
 
 
-            <div class="mb-3">
-                <label class="form-label" for="image">اختيار صورة المدينة</label>
-                <div class="custom-file">
-                    <input type="hidden" id="oldImage" name="oldImage" value="<?php echo $city['city_image'] ?>">
-                    <input type="file" class="custom-file-input" id="image" name="image">
-                    <label class="custom-file-label" for="image">اختيار صورة المدينة</label>
-                </div>
-                <span class="error"><?php
-                    echo $imageError ?></span>
-            </div>
+<form method="post"
+      action="<?php echo htmlspecialchars($_SERVER['REQUEST_URI']) ?>">
 
-            <button type="submit" class="btn py-2 px-4 btn-primary">
-                إضافة
-            </button>
+    <label for="name">اسم المدينة</label>
+    <input type="text" id="name" name="name"
+           value="<?php echo $city['name'] ?>"/>
+    <span class="error"> <?php echo $nameError ?></span>
 
+    <br><br>
 
-        </form>
+    <label for="day">تاريخ اليوم</label>
+    <input type="date" id="day" name="day" value="<?php echo $city['day'] ?>"/>
+    <span class="error"> <?php echo $dayError ?></span>
 
+    <br><br>
 
-    </div>
+    <label for="weather">الطقس</label>
+    <input type="text" id="weather" name="weather"
+           value="<?php echo $city['weather'] ?>"/>
+    <span class="error"> <?php echo $weatherError ?></span>
 
-</div>
+    <br><br>
 
-<!--End add city Section-->
+    <button type="submit" name="editCity">
+        تعديل
+    </button>
 
-
-<!--Start Footer Section-->
-<div class="site-footer ">
-    <div class="inner first">
-        <div class="inner dark">
-            <div class="container">
-                <div class="row text-center">
-                    <div class="col-md-8  mb-md-0 mx-auto">
-                        <p>
-                            جميع الحقوق محفوظة للتوصية بالجولات @ 2024
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-<!--End Footer Section-->
-
-
-<div id="overlayer"></div>
-<div class="loader">
-    <div class="spinner-border" role="status">
-        <span class="sr-only">Loading...</span>
-    </div>
-</div>
-
-<script src="../assets/js/jquery-3.4.1.min.js"></script>
-<script src="../assets/js/popper.min.js"></script>
-<script src="../assets/js/bootstrap.min.js"></script>
-<script src="../assets/js/owl.carousel.min.js"></script>
-<script src="../assets/js/jquery.animateNumber.min.js"></script>
-<script src="../assets/js/jquery.waypoints.min.js"></script>
-<script src="../assets/js/jquery.fancybox.min.js"></script>
-<script src="../assets/js/aos.js"></script>
-<script src="../assets/js/moment.min.js"></script>
-<script src="../assets/js/daterangepicker.js"></script>
-
-<script src="../assets/js/typed.js"></script>
-<script src="../assets/js/custom.js"></script>
-
+</form>
 
 </body>
-
 </html>
-

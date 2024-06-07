@@ -26,9 +26,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         // Prepare and execute SQL statement to ban the supervisor
         $stmt = $con->prepare("UPDATE supervisor SET ban=? WHERE supervisor_id=?");
         $stmt->execute([$status, $supervisor_id]);
-        // Set success message and redirect to dashboard.php
+        // Set success message and redirect to show_supervisor.php
         $successMsg = 'تم حظر المشرف بنجاح';
-        header("Location: dashboard.php?success_message=" . urlencode($successMsg));
+        header("Location: show_supervisor.php?success_message=" . urlencode($successMsg));
         exit; // Exit to prevent further execution after redirection
 
     } elseif ($status === 'temporary') {
@@ -36,7 +36,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $stmt = $con->prepare("UPDATE supervisor SET ban=?, ban_expiration_date=? WHERE supervisor_id=?");
         $stmt->execute([$status, $ban_expiration_date, $supervisor_id]);
         $successMsg = 'تم حظر  المشرف مؤقتا بنجاح';
-        header("Location: dashboard.php?success_message=" . urlencode($successMsg));
+        header("Location: show_supervisor.php?success_message=" . urlencode($successMsg));
         exit; // Exit to prevent further execution after redirection
 
     } elseif ($status === 'unbanned') {
@@ -44,9 +44,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $stmt = $con->prepare("UPDATE supervisor SET ban=?, ban_expiration_date=null WHERE supervisor_id=?");
         $stmt->execute([$status, $supervisor_id]);
 
-        // Set success message and redirect to dashboard.php
+        // Set success message and redirect to show_supervisor.php
         $successMsg = 'تم رفع حظر عن المشرف بنجاح';
-        header("Location: dashboard.php?success_message=" . urlencode($successMsg));
+        header("Location: show_supervisor.php?success_message=" . urlencode($successMsg));
         exit; // Exit to prevent further execution after redirection
     }
 }

@@ -2,12 +2,11 @@
 
 // Start the session to access session variables
 session_start();
-
 if (!(isset($_SESSION['email']))) {
     header('Location../login.php');
 }
 // Include the database connection file
-include "connection.php";
+include "../connection.php";
 
 // Get the tourist ID from the session
 $tourist_id = $_SESSION['tourist_id'];
@@ -43,17 +42,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     // Determine the page to redirect based on the referer
     $referer = $_SERVER['HTTP_REFERER'];
-    if (str_contains($referer, 'destination.php')) {
-        $redirectPage = 'destination.php';
-        header("Location:".$redirectPage."?success_message=".urlencode($successMsg));
-    } elseif (str_contains($referer, 'dashboard.php')) {
-        $redirectPage = 'tourist/dashboard.php';
-        header("Location:".$redirectPage."?success_message=".urlencode($successMsg));
-
-    } elseif(str_contains($referer, 'city_destination')) {
-        $redirectPage = 'city_destination.php';
-        header("Location: $redirectPage?city_id=".$city_id."&success_message=".urlencode($successMsg));
+    if (str_contains($referer, 'show_destinations.php')) {
+        $redirectPage = 'show_destinations.php';
+    } elseif (str_contains($referer, 'favorites.php')) {
+        $redirectPage = 'favorites.php';
+    } else {
+        $redirectPage = 'dashboard.php';
     }
+
+    // Redirect to the appropriate page with the success message
+    header("Location: $redirectPage?city_id=" . $city_id . "&success_message=" . urlencode($successMsg));
 }
 
 
